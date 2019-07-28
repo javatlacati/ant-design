@@ -22,10 +22,11 @@ module.exports = {
   transform: {
     '\\.tsx?$': './node_modules/antd-tools/lib/jest/codePreprocessor',
     '\\.js$': './node_modules/antd-tools/lib/jest/codePreprocessor',
+    '\\.jsx$': './node_modules/antd-tools/lib/jest/codePreprocessor',
     '\\.md$': './node_modules/antd-tools/lib/jest/demoPreprocessor',
     '\\.(jpg|png|gif|svg)$': './node_modules/antd-tools/lib/jest/imagePreprocessor',
   },
-  testRegex: `${libDir === 'dist' ? 'demo' : '.*'}\\.test\\.js$`,
+  testRegex: `${libDir === 'dist' ? 'demo' : '.*'}\\.test\\.jsx?$`,
   collectCoverageFrom: [
     'components/**/*.{ts,tsx}',
     '!components/*/style/index.tsx',
