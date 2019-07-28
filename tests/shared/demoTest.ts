@@ -11,12 +11,12 @@ const testDist = process.env.LIB_DIR === 'dist';
  * Or `f7fa7a3c-a675-47bc-912e-0c45fb6a74d9`(randomly) when not test env.
  * So we need hack of this to modify the `aria-controls`.
  */
-function ariaConvert(wrapper) {
+function ariaConvert(wrapper: any) {
   if (!testDist) return wrapper;
 
   const matches = new Map();
 
-  function process(entry) {
+  function process(entry: any) {
     const { attribs, children } = entry;
     if (matches.has(entry)) return;
     matches.set(entry, true);
@@ -39,15 +39,16 @@ function ariaConvert(wrapper) {
   return wrapper;
 }
 
-export default function demoTest(component, options = {}) {
+export default function demoTest(component: string, options: any = {}) {
   const files = glob.sync(`./components/${component}/demo/*.md`);
 
   files.forEach(file => {
     let testMethod = options.skip === true ? test.skip : test;
-    if (Array.isArray(options.skip) && options.skip.some(c => file.includes(c))) {
+    if (Array.isArray(options.skip) && options.skip.some((c: string) => file.includes(c))) {
       testMethod = test.skip;
     }
     testMethod(`renders ${file} correctly`, () => {
+      // @ts-ignore
       MockDate.set(moment('2016-11-22'));
       const demo = require(`../.${file}`).default; // eslint-disable-line global-require, import/no-dynamic-require
       const wrapper = render(demo);
