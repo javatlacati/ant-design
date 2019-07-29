@@ -1,13 +1,13 @@
 import React from 'react';
-import { mount, render } from 'enzyme';
+import { mount, ReactWrapper, render } from 'enzyme';
 import Tabs from '..';
 
 const { TabPane } = Tabs;
 
 describe('Tabs', () => {
   describe('editable-card', () => {
-    let handleEdit;
-    let wrapper;
+    let handleEdit: any;
+    let wrapper: ReactWrapper;
 
     beforeEach(() => {
       handleEdit = jest.fn();
