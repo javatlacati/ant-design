@@ -1,14 +1,24 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Avatar from '..';
+import Avatar, { AvatarState } from '..';
+
+export interface Global {
+  document: Document;
+  window: Window;
+}
+
+declare var global: Global;
 
 describe('Avatar Render', () => {
-  let originOffsetWidth;
+  let originOffsetWidth: number;
   beforeAll(() => {
     // Mock offsetHeight
-    originOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth').get;
+    const ownPropertyDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+    if (ownPropertyDescriptor) {
+      originOffsetWidth = ownPropertyDescriptor.get as any as number;
+    }
     Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
-      get() {
+      get(): number {
         if (this.className === 'ant-avatar-string') {
           return 100;
         }
@@ -20,7 +30,9 @@ describe('Avatar Render', () => {
   afterAll(() => {
     // Restore Mock offsetHeight
     Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
-      get: originOffsetWidth,
+      get(): number {
+        return originOffsetWidth;
+      },
     });
   });
 
@@ -34,7 +46,7 @@ describe('Avatar Render', () => {
     const div = global.document.createElement('div');
     global.document.body.appendChild(div);
 
-    const wrapper = mount(<Avatar src="http://error.url">Fallback</Avatar>, { attachTo: div });
+    const wrapper = mount<Avatar>(<Avatar src="http://error.url">Fallback</Avatar>, { attachTo: div });
     wrapper.instance().setScale = jest.fn(() => {
       if (wrapper.state().scale === 0.5) {
         return;
@@ -47,7 +59,10 @@ describe('Avatar Render', () => {
     expect(children.length).toBe(1);
     expect(children.text()).toBe('Fallback');
     expect(wrapper.instance().setScale).toHaveBeenCalled();
-    expect(div.querySelector('.ant-avatar-string').style.transform).toContain('scale(0.5)');
+    const querySelector: HTMLSpanElement | null = div.querySelector('.ant-avatar-string');
+    if (querySelector) {
+      expect(querySelector.style.transform).toContain('scale(0.5)');
+    }
 
     wrapper.detach();
     global.document.body.removeChild(div);
@@ -78,13 +93,17 @@ describe('Avatar Render', () => {
       }
     }
 
-    const wrapper = mount(<Foo />, { attachTo: div });
+    const wrapper = mount<Foo>(<Foo />, { attachTo: div });
     // mock img load Error, since jsdom do not load resource by default
     // https://github.com/jsdom/jsdom/issues/1816
     wrapper.find('img').simulate('error');
 
-    expect(wrapper.find(Avatar).instance().state.isImgExist).toBe(true);
-    expect(div.querySelector('img').getAttribute('src')).toBe(LOAD_SUCCESS_SRC);
+    const state: AvatarState = wrapper.find(Avatar).instance().state as AvatarState;
+    expect(state.isImgExist).toBe(true);
+    const querySelector = div.querySelector('img');
+    if (querySelector) {
+      expect(querySelector.getAttribute('src')).toBe(LOAD_SUCCESS_SRC);
+    }
 
     wrapper.detach();
     global.document.body.removeChild(div);
@@ -101,6 +120,7 @@ describe('Avatar Render', () => {
     const wrapper = mount(<Avatar src={LOAD_FAILURE_SRC}>Fallback</Avatar>, { attachTo: div });
     wrapper.find('img').simulate('error');
 
+    // @ts-ignore
     expect(wrapper.find(Avatar).instance().state.isImgExist).toBe(false);
     expect(wrapper.find('.ant-avatar-string').length).toBe(1);
 
@@ -108,6 +128,7 @@ describe('Avatar Render', () => {
     wrapper.setProps({ src: LOAD_SUCCESS_SRC });
     wrapper.update();
 
+    // @ts-ignore
     expect(wrapper.find(Avatar).instance().state.isImgExist).toBe(true);
     expect(wrapper.find('.ant-avatar-image').length).toBe(1);
 
@@ -117,7 +138,7 @@ describe('Avatar Render', () => {
   });
 
   it('should calculate scale of avatar children correctly', () => {
-    const wrapper = mount(<Avatar>Avatar</Avatar>);
+    const wrapper = mount<Avatar>(<Avatar>Avatar</Avatar>);
     expect(wrapper.state().scale).toBe(0.72);
     Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
       get() {
