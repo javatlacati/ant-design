@@ -4,16 +4,17 @@ import Slider from '..';
 
 describe('Slider', () => {
   it('should show tooltip when hovering slider handler', () => {
-    const wrapper = mount(<Slider defaultValue={30} />);
+    const wrapper = mount<Slider>(<Slider defaultValue={30} />);
     wrapper
       .find('.ant-slider-handle')
       .at(0)
       .simulate('mouseEnter');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component
           .getComponent(),
       ),
     ).toMatchSnapshot();
@@ -21,10 +22,11 @@ describe('Slider', () => {
       .find('.ant-slider-handle')
       .at(0)
       .simulate('mouseLeave');
+    const reactWrapper: any = wrapper
+      .find('Trigger');
     expect(
       render(
-        wrapper
-          .find('Trigger')
+        reactWrapper
           .instance()
           .getComponent(),
       ),
