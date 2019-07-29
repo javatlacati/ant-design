@@ -4,7 +4,7 @@ import BackTop from '..';
 
 describe('BackTop', () => {
   it('should scroll to top after click it', async () => {
-    const wrapper = mount(<BackTop visibilityHeight={-1} />);
+    const wrapper = mount<BackTop>(<BackTop visibilityHeight={-1} />);
     document.documentElement.scrollTop = 400;
     // trigger scroll manually
     wrapper.instance().handleScroll();
