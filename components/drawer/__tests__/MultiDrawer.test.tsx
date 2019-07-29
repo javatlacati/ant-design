@@ -40,7 +40,7 @@ class MultiDrawer extends React.Component {
 
   render() {
     const { childrenDrawer, visible, hasChildren } = this.state;
-    const { placement } = this.props;
+    const { placement }: any = this.props;
     return (
       <div>
         <Button type="primary" id="open_drawer" onClick={this.showDrawer}>
@@ -107,6 +107,7 @@ class MultiDrawer extends React.Component {
 
 describe('Drawer', () => {
   it('render right MultiDrawer', () => {
+    // @ts-ignore
     const wrapper = mount(<MultiDrawer placement="right" />);
     wrapper.find('button#open_drawer').simulate('click');
     wrapper.find('button#open_two_drawer').simulate('click');
@@ -116,7 +117,8 @@ describe('Drawer', () => {
   });
 
   it('render left MultiDrawer', () => {
-    const wrapper = mount(<MultiDrawer placement="left" />);
+    // @ts-ignore
+    const wrapper = mount<MultiDrawer>(<MultiDrawer placement="left" />);
     wrapper.find('button#open_drawer').simulate('click');
     wrapper.find('button#open_two_drawer').simulate('click');
     const translateX = wrapper.find('.ant-drawer.test_drawer').get(0).props.style.transform;
@@ -127,7 +129,8 @@ describe('Drawer', () => {
   });
 
   it('render top MultiDrawer', () => {
-    const wrapper = mount(<MultiDrawer placement="top" />);
+    // @ts-ignore
+    const wrapper = mount<MultiDrawer>(<MultiDrawer placement="top" />);
     wrapper.find('button#open_drawer').simulate('click');
     wrapper.find('button#open_two_drawer').simulate('click');
     const translateX = wrapper.find('.ant-drawer.test_drawer').get(0).props.style.transform;
@@ -136,7 +139,8 @@ describe('Drawer', () => {
   });
 
   it('render MultiDrawer is child in unmount', () => {
-    const wrapper = mount(<MultiDrawer placement="top" mask={false} />);
+    // @ts-ignore
+    const wrapper = mount<MultiDrawer>(<MultiDrawer placement="top" mask={false} />);
     wrapper.find('button#open_drawer').simulate('click');
     wrapper.find('button#open_two_drawer').simulate('click');
     wrapper.find('button#remove_drawer').simulate('click');

@@ -4,7 +4,7 @@ import Drawer from '..';
 import Button from '../../button';
 
 class DrawerEventTester extends React.Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = { visible: false };
   }
@@ -26,7 +26,7 @@ class DrawerEventTester extends React.Component {
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible }: any = this.state;
     return (
       <div>
         <Button onClick={this.open}>open</Button>
@@ -53,36 +53,43 @@ describe('Drawer', () => {
   });
 
   it('mask trigger onClose', () => {
-    const wrapper = mount(<DrawerEventTester />);
+    const wrapper = mount<DrawerEventTester>(<DrawerEventTester />);
 
     wrapper.find('button.ant-btn').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(true);
-
+    let state: any = wrapper.instance().state;
+    expect(state.visible).toBe(true);
     wrapper.find('.ant-drawer-mask').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(false);
+    state = wrapper.instance().state;
+    expect(state.visible).toBe(false);
   });
 
   it('close button trigger onClose', () => {
     const wrapper = mount(<DrawerEventTester />);
 
     wrapper.find('button.ant-btn').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(true);
+    let state: any = wrapper.instance().state;
+    expect(state.visible).toBe(true);
 
     wrapper.find('.ant-drawer-close').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(false);
+    state = wrapper.instance().state;
+    expect(state.visible).toBe(false);
   });
 
   it('maskClosable no trigger onClose', () => {
+    // @ts-ignore
     const wrapper = mount(<DrawerEventTester maskClosable={false} />);
 
     wrapper.find('button.ant-btn').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(true);
+    let state: any = wrapper.instance().state;
+    expect(state.visible).toBe(true);
 
     wrapper.find('.ant-drawer-mask').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(true);
+    state = wrapper.instance().state;
+    expect(state.visible).toBe(true);
   });
 
   it('destroyOnClose is true onClose', () => {
+    // @ts-ignore
     const wrapper = mount(<DrawerEventTester destroyOnClose />);
     wrapper.find('button.ant-btn').simulate('click');
     expect(wrapper.find('.ant-drawer-wrapper-body').exists()).toBe(true);
@@ -95,12 +102,14 @@ describe('Drawer', () => {
   });
 
   it('no mask and no closable', () => {
-    const wrapper = mount(<DrawerEventTester destroyOnClose />);
+    // @ts-ignore
+    const wrapper = mount<DrawerEventTester>(<DrawerEventTester destroyOnClose />);
 
     wrapper.find('button.ant-btn').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(true);
-
+    let state: any = wrapper.instance().state;
+    expect(state.visible).toBe(true);
     wrapper.find('.ant-drawer-close').simulate('click');
-    expect(wrapper.instance().state.visible).toBe(false);
+    state = wrapper.instance().state;
+    expect(state.visible).toBe(false);
   });
 });
