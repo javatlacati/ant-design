@@ -50,18 +50,18 @@ describe('Layout', () => {
         <Content>Content</Content>
       </Layout>,
     );
-    expect(
-      wrapper
-        .find('.ant-layout-sider')
-        .at(0)
-        .prop('style').width,
-    ).toBe('50%');
-    expect(
-      wrapper
-        .find('.ant-layout-sider')
-        .at(0)
-        .prop('style').flex,
-    ).toBe('0 0 50%');
+    const prop = wrapper
+      .find('.ant-layout-sider')
+      .at(0)
+      .prop('style');
+    if (prop) {
+      expect(
+        prop.width,
+      ).toBe('50%');
+      expect(
+        prop.flex,
+      ).toBe('0 0 50%');
+    }
   });
 
   it('detect ant-layout-sider-zero-width class in sider when its width is 0%', async () => {
@@ -93,9 +93,11 @@ describe('Layout', () => {
 
   it('should be controlled by collapsed', () => {
     const wrapper = mount(<Sider>Sider</Sider>);
-    expect(wrapper.find('InternalSider').instance().state.collapsed).toBe(false);
+    let state: any = wrapper.find('InternalSider').instance().state;
+    expect(state.collapsed).toBe(false);
     wrapper.setProps({ collapsed: true });
-    expect(wrapper.find('InternalSider').instance().state.collapsed).toBe(true);
+    state = wrapper.find('InternalSider').instance().state;
+    expect(state.collapsed).toBe(true);
   });
 
   it('should not add ant-layout-has-sider when `hasSider` is `false`', () => {
