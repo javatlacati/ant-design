@@ -5,6 +5,7 @@ import Empty from '..';
 describe('Empty', () => {
   it('image size should change', () => {
     const wrapper = mount(<Empty imageStyle={{ height: 20 }} />);
+    // @ts-ignore
     expect(wrapper.find('.ant-empty-image').props().style.height).toBe(20);
   });
 
