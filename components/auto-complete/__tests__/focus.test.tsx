@@ -1,7 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import AutoComplete from '..';
+// @ts-ignore
 import focusTest from '../../../tests/shared/focusTest';
+// import focusTest from './/tests/shared/focusTest.js';
 
 describe('AutoComplete could be focus', () => {
   focusTest(AutoComplete);
@@ -12,7 +14,7 @@ describe('AutoComplete children could be focus', () => {
     jest.useFakeTimers();
   });
 
-  let container;
+  let container: HTMLDivElement;
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -29,9 +31,10 @@ describe('AutoComplete children could be focus', () => {
   it('focus() and onFocus', () => {
     const handleFocus = jest.fn();
     const wrapper = mount(<AutoComplete onFocus={handleFocus} />, { attachTo: container });
-    wrapper
+    const component = wrapper
       .find('input')
-      .instance()
+      .instance() as any as HTMLInputElement;
+    component
       .focus();
     jest.runAllTimers();
     expect(handleFocus).toHaveBeenCalled();
@@ -39,15 +42,14 @@ describe('AutoComplete children could be focus', () => {
 
   it('blur() and onBlur', () => {
     const handleBlur = jest.fn();
-    const wrapper = mount(<AutoComplete onBlur={handleBlur} />, { attachTo: container });
-    wrapper
+    const wrapper = mount<AutoComplete>(<AutoComplete onBlur={handleBlur} />, { attachTo: container });
+    const component = wrapper
       .find('input')
-      .instance()
+      .instance() as any as HTMLInputElement;
+    component
       .focus();
     jest.runAllTimers();
-    wrapper
-      .find('input')
-      .instance()
+    component
       .blur();
     jest.runAllTimers();
     expect(handleBlur).toHaveBeenCalled();

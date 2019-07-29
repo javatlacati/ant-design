@@ -12,10 +12,13 @@ describe('AutoComplete with Custom Input Element Render', () => {
 
     expect(wrapper.find('textarea').length).toBe(1);
     wrapper.find('textarea').simulate('change', { target: { value: '123' } });
+    const reactWrapper = wrapper
+      .find('Trigger');
+    const component = reactWrapper
+      .instance() as any;
+    // @ts-ignore
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent(),
     );
 
