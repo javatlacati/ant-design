@@ -47,7 +47,7 @@ describe('Button', () => {
   });
 
   it('renders Chinese characters correctly in HOC', () => {
-    const Text = ({ children }) => <span>{children}</span>;
+    const Text = ({ children }: {children: any}) => <span>{children}</span>;
     const wrapper = mount(
       <Button>
         <Text>按钮</Text>
@@ -67,8 +67,9 @@ describe('Button', () => {
   });
 
   it('have static property for type detecting', () => {
-    const wrapper = mount(<Button>Button Text</Button>);
+    const wrapper = mount<Button>(<Button>Button Text</Button>);
     // eslint-disable-next-line
+    // @ts-ignore
     expect(wrapper.type().__ANT_BUTTON).toBe(true);
   });
 
@@ -140,10 +141,11 @@ describe('Button', () => {
   });
 
   it('should has click wave effect', async () => {
-    const wrapper = mount(<Button type="primary">button</Button>);
-    wrapper
+    const wrapper = mount<Button>(<Button type="primary">button</Button>);
+    const domNode = wrapper
       .find('.ant-btn')
-      .getDOMNode()
+      .getDOMNode() as HTMLButtonElement;
+    domNode
       .click();
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(wrapper.render()).toMatchSnapshot();
