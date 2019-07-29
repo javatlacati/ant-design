@@ -34,7 +34,7 @@ describe('Popconfirm', () => {
   });
 
   it('should show overlay when trigger is clicked', () => {
-    const popconfirm = mount(
+    const popconfirm = mount<Popconfirm>(
       <Popconfirm title="code">
         <span>show me your code</span>
       </Popconfirm>,
@@ -53,7 +53,7 @@ describe('Popconfirm', () => {
 
   it('should be controlled by visible', () => {
     jest.useFakeTimers();
-    const popconfirm = mount(
+    const popconfirm = mount<Popconfirm>(
       <Popconfirm title="code">
         <span>show me your code</span>
       </Popconfirm>,
@@ -127,7 +127,7 @@ describe('Popconfirm', () => {
   });
 
   it('should support defaultVisible', () => {
-    const popconfirm = mount(
+    const popconfirm = mount<Popconfirm>(
       <Popconfirm title="code" defaultVisible>
         <span>show me your code</span>
       </Popconfirm>,
@@ -136,7 +136,7 @@ describe('Popconfirm', () => {
   });
 
   it('should not open in disabled', () => {
-    const popconfirm = mount(
+    const popconfirm = mount<Popconfirm>(
       <Popconfirm title="code" disabled>
         <span>click me</span>
       </Popconfirm>,
