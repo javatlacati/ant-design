@@ -6,13 +6,14 @@ import Button from '../../button';
 describe('ConfigProvider', () => {
   it('Content Security Policy', () => {
     const csp = { nonce: 'test-antd' };
-    const wrapper = mount(
+    const wrapper = mount<ConfigProvider>(
       <ConfigProvider csp={csp}>
         <Button />
       </ConfigProvider>,
     );
 
-    expect(wrapper.find('Wave').instance().csp).toBe(csp);
+    const component: any = wrapper.find('Wave').instance();
+    expect(component.csp).toBe(csp);
   });
 
   it('autoInsertSpaceInButton', () => {
