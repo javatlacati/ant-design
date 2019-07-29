@@ -7,15 +7,15 @@ const ListItem = List.Item;
 describe('List', () => {
   it('locale not passed to internal div', async () => {
     const locale = { emptyText: 'Custom text' };
-    const renderItem = item => <ListItem>{item}</ListItem>;
-    const dataSource = [];
+    const renderItem = (item: any) => <ListItem>{item}</ListItem>;
+    const dataSource: any = [];
 
-    const wrapper = mount(<List renderItem={renderItem} dataSource={dataSource} locale={locale} />);
+    const wrapper = mount<List<any>>(<List renderItem={renderItem} dataSource={dataSource} locale={locale} />);
     expect(
       wrapper
         .find('div')
         .first()
-        .props().locale,
+        .prop('locale'),
     ).toBe(undefined);
   });
 });

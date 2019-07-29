@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, mount } from 'enzyme';
+import { render, mount, ReactWrapper } from 'enzyme';
 import List from '..';
 
 describe('List.pagination', () => {
@@ -12,24 +12,24 @@ describe('List.pagination', () => {
 
   const pagination = { className: 'my-page', pageSize: 2 };
 
-  function createList(props) {
+  function createList(props?: any) {
     return (
       <List
         itemLayout="vertical"
         pagination={pagination}
         dataSource={data}
-        renderItem={item => <List.Item key={item.key}>{item.name}</List.Item>}
+        renderItem={(item: any) => <List.Item key={item.key}>{item.name}</List.Item>}
         {...props}
       />
     );
   }
 
-  function renderedNames(wrapper) {
-    return wrapper.find('.ant-list-item').map(row => row.text());
+  function renderedNames(wrapper: ReactWrapper) {
+    return wrapper.find('.ant-list-item').map((row: any) => row.text());
   }
 
   it('renders pagination correctly', () => {
-    const wrapper = render(createList());
+    const wrapper = render<List<any>, any>(createList());
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -90,7 +90,7 @@ describe('List.pagination', () => {
   // https://github.com/ant-design/ant-design/issues/4532
   // https://codepen.io/afc163/pen/pWVRJV?editors=001
   it('should display pagination as prop pagination change between true and false', () => {
-    const wrapper = mount(createList());
+    const wrapper = mount<List<any>>(createList());
     expect(wrapper.find('.ant-pagination')).toHaveLength(1);
     expect(wrapper.find('.ant-pagination-item')).toHaveLength(2);
     wrapper.setProps({ pagination: false });
@@ -103,6 +103,7 @@ describe('List.pagination', () => {
     expect(renderedNames(wrapper)).toEqual(['Tom', 'Jerry']);
     wrapper.setProps({ pagination: false });
     expect(wrapper.find('.ant-pagination')).toHaveLength(0);
+    // @ts-ignore
     wrapper.setProps({ pagination: true });
     expect(wrapper.find('.ant-pagination')).toHaveLength(1);
     // Legacy code will make pageSize ping with 10, here we fixed to keep sync by current one
