@@ -141,30 +141,39 @@ describe('Test utils function', () => {
 
   describe('wave', () => {
     it('bindAnimationEvent should return when node is null', () => {
-      const wrapper = mount(
+      const reactWrapper = mount(
         <Wave>
           <button type="button" disabled />
         </Wave>,
-      ).instance();
-      expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      );
+      const wrapper = reactWrapper.instance();
+      // expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      expect(wrapper).toHaveProperty('bindAnimationEvent');
+      expect(reactWrapper.prop('bindAnimationEvent')).not.toBeDefined();
     });
 
     it('bindAnimationEvent.onClick should return when children is hidden', () => {
-      const wrapper = mount(
+      const reactWrapper = mount(
         <Wave>
           <button type="button" style={{ display: 'none' }} />
         </Wave>,
-      ).instance();
-      expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      );
+      const wrapper = reactWrapper.instance();
+      // expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      expect(wrapper).toHaveProperty('bindAnimationEvent');
+      expect(reactWrapper.prop('bindAnimationEvent')).not.toBeDefined();
     });
 
     it('bindAnimationEvent.onClick should return when children is input', () => {
-      const wrapper = mount(
+      const reactWrapper = mount(
         <Wave>
           <input />
         </Wave>,
-      ).instance();
-      expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      );
+      const wrapper = reactWrapper.instance();
+      // expect(wrapper.bindAnimationEvent()).toBe(undefined);
+      expect(wrapper).toHaveProperty('bindAnimationEvent');
+      expect(reactWrapper.prop('bindAnimationEvent')).not.toBeDefined();
     });
 
     it('should not throw when click it', () => {
@@ -188,9 +197,13 @@ describe('Test utils function', () => {
 
   describe('TransButton', () => {
     it('can be focus/blur', () => {
-      const wrapper = mount(<TransButton>TransButton</TransButton>);
-      expect(typeof wrapper.instance().focus).toBe('function');
-      expect(typeof wrapper.instance().blur).toBe('function');
+      const reactWrapper = mount<TransButton>(<TransButton>TransButton</TransButton>);
+      const wrapper = reactWrapper.instance();
+      expect(wrapper).toHaveProperty('focus');
+      expect(typeof wrapper.focus).toBe('function');
+
+      expect(wrapper).toHaveProperty('blur');
+      expect(typeof wrapper.blur).toBe('function');
     });
 
     it('should trigger onClick when press enter', () => {

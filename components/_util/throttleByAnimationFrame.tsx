@@ -14,7 +14,7 @@ export default function throttleByAnimationFrame(fn: (...args: any[]) => void) {
     }
   };
 
-  (throttled as any).cancel = () => raf.cancel(requestId!);
+  throttled.cancel = () => raf.cancel(requestId!);
 
   return throttled;
 }
