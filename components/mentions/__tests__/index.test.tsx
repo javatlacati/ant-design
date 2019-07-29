@@ -1,10 +1,10 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import Mentions from '..';
 
 const { getMentions } = Mentions;
 
-function simulateInput(wrapper, text = '', keyEvent) {
+function simulateInput(wrapper: ReactWrapper, text = '', keyEvent?: any) {
   const lastChar = text[text.length - 1];
   const myKeyEvent = keyEvent || {
     which: lastChar.charCodeAt(0),
@@ -17,7 +17,7 @@ function simulateInput(wrapper, text = '', keyEvent) {
 
   wrapper.find('textarea').simulate('keyDown', myKeyEvent);
 
-  const textareaInstance = wrapper.find('textarea').instance();
+  const textareaInstance = wrapper.find('textarea').instance() as any as HTMLTextAreaElement;
   textareaInstance.value = text;
   textareaInstance.selectionStart = text.length;
   textareaInstance.selectionStart = text.length;
@@ -72,14 +72,14 @@ describe('Mentions', () => {
   });
 
   it('loading', () => {
-    const wrapper = mount(<Mentions loading />);
+    const wrapper = mount<Mentions>(<Mentions loading />);
     simulateInput(wrapper, '@');
     expect(wrapper.find('.ant-mentions-dropdown-menu-item').length).toBe(1);
     expect(wrapper.find('.ant-spin').length).toBeTruthy();
   });
 
   it('notFoundContent', () => {
-    const wrapper = mount(<Mentions notFoundContent={<span className="bamboo-light" />} />);
+    const wrapper = mount<Mentions>(<Mentions notFoundContent={<span className="bamboo-light" />} />);
     simulateInput(wrapper, '@');
     expect(wrapper.find('.ant-mentions-dropdown-menu-item').length).toBe(1);
     expect(wrapper.find('.bamboo-light').length).toBeTruthy();
