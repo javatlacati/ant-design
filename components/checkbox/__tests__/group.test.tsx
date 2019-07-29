@@ -91,9 +91,11 @@ describe('CheckboxGroup', () => {
 
     const wrapper = mount(<Checkbox.Group options={options} />);
 
-    expect(wrapper.instance().state.value).toEqual([]);
+    let state: any = wrapper.instance().state;
+    expect(state.value).toEqual([]);
     wrapper.setProps({ value: ['Apple'] });
-    expect(wrapper.instance().state.value).toEqual(['Apple']);
+    state = wrapper.instance().state;
+    expect(state.value).toEqual(['Apple']);
   });
 
   // https://github.com/ant-design/ant-design/issues/12642

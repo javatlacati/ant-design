@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Checkbox from '..';
+// @ts-ignore
 import focusTest from '../../../tests/shared/focusTest';
 
 describe('Checkbox', () => {
