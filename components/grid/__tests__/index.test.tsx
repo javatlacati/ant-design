@@ -3,11 +3,11 @@ import { render, mount } from 'enzyme';
 import { Col, Row } from '..';
 
 jest.mock('enquire.js', () => {
-  let that;
-  let unmatchFun;
+  let that: any;
+  let unmatchFun: any;
   return {
     unregister: jest.fn(),
-    register: (media, options) => {
+    register: (media: string, options: any) => {
       if (media === '(max-width: 575px)') {
         that = this;
         options.match.call(that);
@@ -32,7 +32,7 @@ describe('Grid', () => {
   });
 
   it('when typeof getGutter is object', () => {
-    const wrapper = mount(<Row gutter={{ xs: 8, sm: 16, md: 24 }} />);
+    const wrapper = mount<Row>(<Row gutter={{ xs: 8, sm: 16, md: 24 }} />);
     expect(wrapper.instance().getGutter()).toBe(8);
     wrapper.unmount();
   });
