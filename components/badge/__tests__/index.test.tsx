@@ -18,9 +18,9 @@ describe('Badge', () => {
   });
 
   it('badge should support float number', () => {
-    let wrapper = render(<Badge count={3.5} />);
+    let wrapper: any = render(<Badge count={3.5} />);
     expect(wrapper).toMatchSnapshot();
-    wrapper = mount(<Badge count="3.5" />);
+    wrapper = mount<Badge>(<Badge count="3.5" />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -30,25 +30,26 @@ describe('Badge', () => {
   });
 
   it('should have an overriden title attribute', () => {
-    const badge = mount(<Badge count={10} title="Custom title" />);
+    const badge = mount<Badge>(<Badge count={10} title="Custom title" />);
+    const namedItem: any = badge
+      .find('.ant-scroll-number')
+      .getDOMNode()
+      .attributes.getNamedItem('title');
     expect(
-      badge
-        .find('.ant-scroll-number')
-        .getDOMNode()
-        .attributes.getNamedItem('title').value,
+      namedItem.value,
     ).toEqual('Custom title');
   });
 
   // https://github.com/ant-design/ant-design/issues/10626
   it('should be composable with Tooltip', () => {
-    const wrapper = mount(
+    const wrapper = mount<Tooltip>(
       <Tooltip title="Fix the error">
         <Badge status="error" />
       </Tooltip>,
     );
     wrapper.find('Badge').simulate('mouseenter');
     jest.runAllTimers();
-    expect(wrapper.instance().tooltip.props.visible).toBe(true);
+    expect(wrapper.instance()[`tooltip`].props.visible).toBe(true);
   });
 
   it('should render when count is changed', () => {
@@ -93,7 +94,8 @@ describe('Badge', () => {
   // https://github.com/ant-design/ant-design/issues/15349
   it('should color style  works on Badge', () => {
     const wrapper = mount(<Badge style={{ color: 'red' }} status="success" text="Success" />);
-    expect(wrapper.find('.ant-badge-status-text').props().style.color).toBe('red');
+    const style: any = wrapper.find('.ant-badge-status-text').props().style;
+    expect(style.color).toBe('red');
   });
 
   // https://github.com/ant-design/ant-design/issues/15799
