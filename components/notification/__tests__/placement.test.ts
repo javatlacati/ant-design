@@ -3,17 +3,17 @@ import notification from '..';
 describe('Notification.placement', () => {
   afterEach(() => notification.destroy());
 
-  function $$(className) {
+  function $$(className: string) {
     return document.body.querySelectorAll(className);
   }
 
-  function getStyle(el, prop) {
+  function getStyle(el: any, prop?: string) {
     const style = window.getComputedStyle ? window.getComputedStyle(el) : el.currentStyle;
     // If a css property's value is `auto`, it will return an empty string.
     return prop ? style[prop] : style;
   }
 
-  function open(args) {
+  function open(args?: any) {
     notification.open({
       message: 'Notification Title',
       description: 'This is the content of the notification.',
@@ -21,7 +21,7 @@ describe('Notification.placement', () => {
     });
   }
 
-  function config(args) {
+  function config(args: any) {
     notification.config({
       ...args,
     });
@@ -135,7 +135,8 @@ describe('Notification.placement', () => {
         top: 100,
         bottom: 50,
       });
-      style = getStyle($$('.ant-notification-bottomLeft')[0]);
+      const elementNodeListOf = $$('.ant-notification-bottomLeft');
+      style = getStyle(elementNodeListOf[0]);
       expect(style.top).toBe('');
       expect(style.left).toBe('0px');
       expect(style.bottom).toBe('50px');

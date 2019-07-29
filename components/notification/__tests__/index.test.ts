@@ -57,8 +57,9 @@ describe('notification', () => {
   });
 
   it('should be able to open with icon', () => {
-    const openNotificationWithIcon = type => {
+    const openNotificationWithIcon = (type: string) => {
       const iconPrefix = '.ant-notification-notice-icon';
+      // @ts-ignore
       notification[type]({
         message: 'Notification Title',
         duration: 0,
