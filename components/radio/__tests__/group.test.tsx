@@ -5,7 +5,7 @@ import RadioGroup from '../group';
 import RadioButton from '../radioButton';
 
 describe('Radio', () => {
-  function createRadioGroup(props) {
+  function createRadioGroup(props: any) {
     return (
       <RadioGroup {...props}>
         <Radio value="A">A</Radio>
@@ -15,7 +15,7 @@ describe('Radio', () => {
     );
   }
 
-  function createRadioGroupByOption(props) {
+  function createRadioGroupByOption(props?: any) {
     const options = [
       { label: 'A', value: 'A' },
       { label: 'B', value: 'B' },
