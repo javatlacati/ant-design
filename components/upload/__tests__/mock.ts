@@ -4,7 +4,7 @@ export function setup() {
   mock.setup();
   mock.post('http://upload.com/', (req, res) => {
     req.headers({
-      'content-length': 100,
+      'content-length': '100',
     });
     req.body('thisisbody');
     return res;

@@ -1,10 +1,11 @@
 /* eslint-disable react/no-string-refs, react/prefer-es6-class */
 import React from 'react';
 import { mount } from 'enzyme';
-import Upload from '..';
+import Upload, { RcFile, UploadProps } from '..';
 import Form from '../../form';
 import { T, fileToObject, genPercentAdd, getFileItem, removeFileItem } from '../utils';
 import { setup, teardown } from './mock';
+import { UploadFile } from "../interface";
 
 describe('Upload', () => {
   beforeEach(() => setup());
@@ -32,17 +33,17 @@ describe('Upload', () => {
 
   it('return promise in beforeUpload', done => {
     const data = jest.fn();
-    const props = {
+    // @ts-ignore
+    const props = {beforeUpload: () => new Promise(resolve => setTimeout(() => resolve('success'), 100)),
       action: 'http://upload.com',
-      beforeUpload: () => new Promise(resolve => setTimeout(() => resolve('success'), 100)),
       data,
-      onChange: ({ file }) => {
+      onChange: ({ file }: { file: UploadFile }) => {
         if (file.status !== 'uploading') {
           expect(data).toHaveBeenCalled();
           done();
         }
       },
-    };
+    } as UploadProps;
 
     const wrapper = mount(
       <Upload {...props}>
@@ -61,7 +62,7 @@ describe('Upload', () => {
     const data = jest.fn();
     const props = {
       action: 'http://upload.com',
-      beforeUpload: file =>
+      beforeUpload: (file: UploadFile) =>
         new Promise(resolve =>
           setTimeout(() => {
             const result = file;
@@ -70,7 +71,7 @@ describe('Upload', () => {
           }, 100),
         ),
       data,
-      onChange: ({ file }) => {
+      onChange: ({ file }: { file: UploadFile }) => {
         if (file.status !== 'uploading') {
           expect(data).toHaveBeenCalled();
           expect(file.name).toEqual('test.png');
@@ -79,8 +80,8 @@ describe('Upload', () => {
       },
     };
 
-    const wrapper = mount(
-      <Upload {...props}>
+    // @ts-ignore
+    const wrapper = mount<Upload>(<Upload {...props}>
         <button type="button">upload</button>
       </Upload>,
     );
@@ -103,21 +104,22 @@ describe('Upload', () => {
       type: 'image/png',
     });
     const data = jest.fn();
-    const props = {
+    // @ts-ignore
+    const props = {fileList,
       action: 'http://upload.com',
-      fileList,
       beforeUpload: () => false,
       data,
-      onChange: ({ file, fileList: updatedFileList }) => {
+      // tslint:disable-next-line:no-shadowed-variable
+      onChange: ({ file, fileList : updatedFileList }: { file: File, fileList: File[]}) => {
         expect(file instanceof File).toBe(true);
-        expect(updatedFileList.map(f => f.name)).toEqual(['bar.png', 'foo.png']);
+        expect(updatedFileList.map((f: any) => f.name)).toEqual(['bar.png', 'foo.png']);
         expect(data).not.toHaveBeenCalled();
         done();
       },
     };
 
-    const wrapper = mount(
-      <Upload {...props}>
+    // @ts-ignore
+    const wrapper = mount(<Upload {...props}>
         <button type="button">upload</button>
       </Upload>,
     );
@@ -130,18 +132,18 @@ describe('Upload', () => {
   });
 
   it('should increase percent automaticly when call autoUpdateProgress in IE', done => {
-    let uploadInstance;
-    let lastPercent = -1;
+    let uploadInstance: any;
+    let lastPercent: number = -1;
     const props = {
       action: 'http://upload.com',
-      onChange: ({ file }) => {
+      onChange: ({ file }: {file: UploadFile}) => {
         if (file.percent === 0 && file.status === 'uploading') {
           // manually call it
           uploadInstance.autoUpdateProgress(0, file);
         }
         if (file.status === 'uploading') {
-          expect(file.percent).toBeGreaterThan(lastPercent);
-          lastPercent = file.percent;
+          expect(file.percent!).toBeGreaterThan(lastPercent);
+          lastPercent = file.percent!;
         }
         if (file.status === 'done' || file.status === 'error') {
           done();
@@ -149,7 +151,7 @@ describe('Upload', () => {
       },
     };
 
-    const wrapper = mount(
+    const wrapper = mount<Upload>(
       <Upload {...props}>
         <button type="button">upload</button>
       </Upload>,
@@ -176,8 +178,8 @@ describe('Upload', () => {
       },
     };
 
-    const wrapper = mount(
-      <Upload {...props}>
+    // @ts-ignore
+    const wrapper = mount<Upload>(<Upload {...props}>
         <button type="button">upload</button>
       </Upload>,
     );
@@ -207,10 +209,14 @@ describe('Upload', () => {
     // eslint-disable-next-line
     class Demo extends React.Component {
       render() {
-        const {
-          form: { getFieldDecorator },
-          children,
-        } = this.props;
+        const props = this.props as any;
+        const form = props.form as any;
+        const getFieldDecorator = form[`getFieldDecorator`] as Function;
+        const children = props.children;
+        // const {
+        //   form: { getFieldDecorator },
+        //   children,
+        // } = this.props;
         return (
           <Form>
             <Form.Item label="Upload">
@@ -236,10 +242,14 @@ describe('Upload', () => {
     // eslint-disable-next-line
     class Demo extends React.Component {
       render() {
-        const {
-          form: { getFieldDecorator },
-          disabled,
-        } = this.props;
+        // const {
+        //   form: { getFieldDecorator },
+        //   disabled,
+        // } = this.props;
+        const props = this.props as any;
+        const disabled = props.disabled as boolean;
+        const form = props.form as any;
+        const getFieldDecorator = form.getFieldDecorator as Function;
         return (
           <Form>
             <Form.Item label="Upload">
@@ -270,9 +280,11 @@ describe('Upload', () => {
       },
     ];
     const wrapper = mount(<Upload />);
-    expect(wrapper.instance().state.fileList).toEqual([]);
+    let state: any = wrapper.instance().state;
+    expect(state.fileList).toEqual([]);
     wrapper.setProps({ fileList });
-    expect(wrapper.instance().state.fileList).toEqual(fileList);
+    state = wrapper.instance().state;
+    expect(state.fileList).toEqual(fileList);
   });
 
   describe('util', () => {
@@ -283,7 +295,7 @@ describe('Upload', () => {
     });
 
     it('should be able to copy file instance', () => {
-      const file = new File([], 'aaa.zip');
+      const file = new File([], 'aaa.zip') as any as RcFile;
       const copiedFile = fileToObject(file);
       ['uid', 'lastModified', 'lastModifiedDate', 'name', 'size', 'type'].forEach(key => {
         expect(key in copiedFile).toBe(true);
@@ -309,19 +321,19 @@ describe('Upload', () => {
     });
 
     it('should be able to get fileItem', () => {
-      const file = { uid: '-1', name: 'item.jpg' };
+      const file: UploadFile = { uid: '-1', name: 'item.jpg' } as any as UploadFile;
       const fileList = [
         {
           uid: '-1',
           name: 'item.jpg',
         },
-      ];
+      ] as any as UploadFile[];
       const targetItem = getFileItem(file, fileList);
       expect(targetItem).toBe(fileList[0]);
     });
 
     it('should be able to remove fileItem', () => {
-      const file = { uid: '-1', name: 'item.jpg' };
+      const file = { uid: '-1', name: 'item.jpg' } as UploadFile;
       const fileList = [
         {
           uid: '-1',
@@ -331,13 +343,13 @@ describe('Upload', () => {
           uid: '-2',
           name: 'item2.jpg',
         },
-      ];
+      ] as UploadFile[];
       const targetItem = removeFileItem(file, fileList);
       expect(targetItem).toEqual(fileList.slice(1));
     });
 
     it('should not be able to remove fileItem', () => {
-      const file = { uid: '-3', name: 'item.jpg' };
+      const file = { uid: '-3', name: 'item.jpg' } as UploadFile;
       const fileList = [
         {
           uid: '-1',
@@ -347,7 +359,7 @@ describe('Upload', () => {
           uid: '-2',
           name: 'item2.jpg',
         },
-      ];
+      ] as UploadFile[];
       const targetItem = removeFileItem(file, fileList);
       expect(targetItem).toBe(null);
     });
@@ -365,7 +377,7 @@ describe('Upload', () => {
           rel: 'noopener',
         },
       },
-    ];
+    ] as UploadFile[];
     const wrapper = mount(<Upload fileList={fileList} />);
     const linkNode = wrapper.find('a.ant-upload-list-item-name');
     expect(linkNode.props().download).toBe('image');
@@ -385,7 +397,7 @@ describe('Upload', () => {
         url: 'http://www.baidu.com/xxx.png',
         linkProps: linkPropsString,
       },
-    ];
+    ] as UploadFile[];
     const wrapper = mount(<Upload fileList={fileList} />);
     const linkNode = wrapper.find('a.ant-upload-list-item-name');
     expect(linkNode.props().download).toBe('image');
@@ -406,6 +418,7 @@ describe('Upload', () => {
       ],
     };
 
+    // @ts-ignore
     const wrapper = mount(<Upload {...props} />);
 
     wrapper.find('div.ant-upload-list-item i.anticon-close').simulate('click');
@@ -422,7 +435,7 @@ describe('Upload', () => {
 
   // https://github.com/ant-design/ant-design/issues/14439
   it('should allow call abort function through upload instance', () => {
-    const wrapper = mount(
+    const wrapper = mount<Upload>(
       <Upload>
         <button type="button">upload</button>
       </Upload>,
@@ -444,7 +457,7 @@ describe('Upload', () => {
   });
 
   it('corrent dragCls when type is drag', () => {
-    const fileList = [{ status: 'uploading', uid: 'file' }];
+    const fileList = [{ status: 'uploading', uid: 'file' }] as UploadFile[];
     const wrapper = mount(
       <Upload type="drag" fileList={fileList}>
         <button type="button">upload</button>
@@ -454,14 +467,15 @@ describe('Upload', () => {
   });
 
   it('return when targetItem is null', () => {
-    const fileList = [{ uid: 'file' }];
-    const wrapper = mount(
+    const fileList = [{ uid: 'file' }] as UploadFile[];
+    const wrapper = mount<Upload>(
       <Upload type="drag" fileList={fileList}>
         <button type="button">upload</button>
       </Upload>,
     ).instance();
-    expect(wrapper.onSuccess('', { uid: 'fileItem' })).toBe(undefined);
-    expect(wrapper.onProgress('', { uid: 'fileItem' })).toBe(undefined);
-    expect(wrapper.onError('', '', { uid: 'fileItem' })).toBe(undefined);
+    const newVar = { uid: 'fileItem' } as UploadFile;
+    expect(wrapper.onSuccess('', newVar)).toBe(undefined);
+    expect(wrapper.onProgress({ percent: 0 }, newVar)).toBe(undefined);
+    expect(wrapper.onError(new Error(''), '', newVar)).toBe(undefined);
   });
 });

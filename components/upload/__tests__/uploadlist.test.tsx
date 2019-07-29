@@ -3,11 +3,13 @@ import { mount } from 'enzyme';
 import Upload from '..';
 import UploadList from '../UploadList';
 import Form from '../../form';
+// @ts-ignore
 import { spyElementPrototypes } from '../../__tests__/util/domHook';
 import { errorRequest, successRequest } from './requests';
 import { setup, teardown } from './mock';
+import { UploadFile } from "../interface";
 
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const delay = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
 
 const fileList = [
   {
@@ -24,7 +26,7 @@ const fileList = [
     url: 'https://zos.alipayobjects.com/rmsportal/IQKRngzUuFzJzGzRJXUs.png',
     thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
   },
-];
+] as UploadFile[];
 
 describe('Upload List', () => {
   // jsdom not support `createObjectURL` yet. Let's handle this.
@@ -33,7 +35,7 @@ describe('Upload List', () => {
 
   // Mock dom
   let size = { width: 0, height: 0 };
-  function setSize(width, height) {
+  function setSize(width: number, height: number) {
     size = { width, height };
   }
   const imageSpy = spyElementPrototypes(Image, {
@@ -52,13 +54,13 @@ describe('Upload List', () => {
     },
   });
 
-  let drawImageCallback = null;
-  function hookDrawImageCall(callback) {
+  let drawImageCallback: Function | null = null;
+  function hookDrawImageCall(callback: Function) {
     drawImageCallback = callback;
   }
   const canvasSpy = spyElementPrototypes(HTMLCanvasElement, {
     getContext: () => ({
-      drawImage: (...args) => {
+      drawImage: (...args: any) => {
         if (drawImageCallback) drawImageCallback(...args);
       },
     }),
@@ -112,7 +114,7 @@ describe('Upload List', () => {
         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
         thumbUrl: 'https://zos.alipayobjects.com/rmsportal/IQKRngzUuFzJzGzRJXUs.png',
       },
-    ];
+    ] as UploadFile[];
     const wrapper = mount(
       <Upload defaultFileList={list}>
         <button type="button">upload</button>
@@ -130,8 +132,8 @@ describe('Upload List', () => {
   });
 
   it('should be uploading when upload a file', done => {
-    let wrapper;
-    const onChange = ({ file }) => {
+    let wrapper: any;
+    const onChange = ({ file }: { file: UploadFile }) => {
       if (file.status === 'uploading') {
         expect(wrapper.render()).toMatchSnapshot();
       }
@@ -157,8 +159,8 @@ describe('Upload List', () => {
   });
 
   it('handle error', done => {
-    let wrapper;
-    const onChange = ({ file }) => {
+    let wrapper: any;
+    const onChange = ({ file }: {file: UploadFile}) => {
       if (file.status !== 'uploading') {
         expect(wrapper.render()).toMatchSnapshot();
         done();
@@ -182,7 +184,7 @@ describe('Upload List', () => {
 
   it('does concat filelist when beforeUpload returns false', () => {
     const handleChange = jest.fn();
-    const wrapper = mount(
+    const wrapper = mount<Upload>(
       <Upload
         listType="picture"
         defaultFileList={fileList}
@@ -268,7 +270,7 @@ describe('Upload List', () => {
         };
         delete newFile.thumbUrl;
         newFileList.push(newFile);
-        const wrapper = mount(
+        const wrapper = mount<Upload>(
           <Upload listType="picture-card" defaultFileList={newFileList} onPreview={handlePreview}>
             <button type="button">upload</button>
           </Upload>,
@@ -357,7 +359,7 @@ describe('Upload List', () => {
           'https://publish-pic-cpu.baidu.com/1296beb3-50d9-4276-885f-52645cbb378e.jpeg@w_228%2ch_152',
         type: 'image/png',
       },
-    ];
+    ] as UploadFile[];
 
     const wrapper = mount(
       <Upload listType="picture" defaultFileList={list}>
@@ -369,31 +371,35 @@ describe('Upload List', () => {
 
   // https://github.com/ant-design/ant-design/issues/7762
   it('work with form validation', () => {
-    let errors;
+    let errors: any;
     class TestForm extends React.Component {
       handleSubmit = () => {
-        const {
-          form: { validateFields },
-        } = this.props;
-        validateFields(err => {
+        // const {
+        //   form: { validateFields },
+        // } = this.props;
+        const props = this.props as any;
+        const form: any = props.form;
+        form.validateFields((err: any) => {
           errors = err;
         });
       };
 
       render() {
-        const {
-          form: { getFieldDecorator },
-        } = this.props;
+        // const {
+        //   form: { getFieldDecorator },
+        // } = this.props;
+        const props = this.props as any;
+        const getFieldDecorator = props.form.getFieldDecorator as Function;
         return (
           <Form onSubmit={this.handleSubmit}>
             <Form.Item>
               {getFieldDecorator('file', {
                 valuePropname: 'fileList',
-                getValueFromEvent: e => e.fileList,
+                getValueFromEvent: (e: any) => e.fileList,
                 rules: [
                   {
                     required: true,
-                    validator: (rule, value, callback) => {
+                    validator: (_: any, value: any, callback: Function) => {
                       if (!value || value.length === 0) {
                         callback('file required');
                       } else {
@@ -428,21 +434,24 @@ describe('Upload List', () => {
   });
 
   it('return when prop onPreview not exists', () => {
+    // @ts-ignore
     const wrapper = mount(<UploadList />).instance();
+    // @ts-ignore
     expect(wrapper.handlePreview()).toBe(undefined);
   });
 
   it('previewFile should work correctly', async () => {
     const file = new File([''], 'test.txt', { type: 'text/plain' });
-    const items = [{ uid: 'upload-list-item', url: '' }];
-    const wrapper = mount(
+    const items = [{ uid: 'upload-list-item', url: '' }] as UploadFile[];
+    const wrapper = mount<UploadList>(
       <UploadList listType="picture-card" items={items} locale={{ previewFile: '' }} />,
     ).instance();
-    return wrapper.props.previewFile(file);
+    const props = wrapper.props as any;
+    return props.previewFile(file);
   });
 
   it('extname should work correctly when url not exists', () => {
-    const items = [{ uid: 'upload-list-item', url: '' }];
+    const items = [{ uid: 'upload-list-item', url: '' }] as UploadFile[];
     const wrapper = mount(
       <UploadList listType="picture-card" items={items} locale={{ previewFile: '' }} />,
     );
@@ -450,7 +459,7 @@ describe('Upload List', () => {
   });
 
   it('when picture-card is loading, icon should render correctly', () => {
-    const items = [{ status: 'uploading', uid: 'upload-list-item' }];
+    const items = [{ status: 'uploading', uid: 'upload-list-item' }] as UploadFile[];
     const wrapper = mount(
       <UploadList listType="picture-card" items={items} locale={{ uploading: 'uploading' }} />,
     );
@@ -460,7 +469,7 @@ describe('Upload List', () => {
 
   it('onPreview should be called, when url exists', () => {
     const onPreview = jest.fn();
-    const items = [{ thumbUrl: 'thumbUrl', url: 'url', uid: 'upload-list-item' }];
+    const items = [{ thumbUrl: 'thumbUrl', url: 'url', uid: 'upload-list-item' }] as UploadFile[];
     const wrapper = mount(
       <UploadList
         listType="picture-card"
@@ -483,11 +492,12 @@ describe('Upload List', () => {
       type: 'image/png',
     });
 
-    const wrapper = mount(
+    const wrapper = mount<UploadList>(
       <UploadList listType="picture-card" items={fileList} locale={{ uploading: 'uploading' }} />,
     );
     const instance = wrapper.instance();
-    return instance.props.previewFile(mockFile).then(dataUrl => {
+    const props = instance.props as any;
+    return props.previewFile(mockFile).then((dataUrl: string) => {
       expect(dataUrl).toEqual('data:image/png;base64,');
     });
   });
@@ -501,13 +511,14 @@ describe('Upload List', () => {
       <UploadList listType="picture-card" items={fileList} locale={{ uploading: 'uploading' }} />,
     );
     const instance = wrapper.instance();
-    return instance.props.previewFile(mockFile).then(dataUrl => {
+    const props = instance.props as any;
+    return props.previewFile(mockFile).then((dataUrl: string) => {
       expect(dataUrl).toBe('');
     });
   });
 
   describe('customize previewFile support', () => {
-    function test(name, renderInstance) {
+    function test(name: string, renderInstance: Function) {
       it(name, async () => {
         const mockThumbnail = 'mock-image';
         const previewFile = jest.fn(() => {
