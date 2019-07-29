@@ -4,7 +4,7 @@ import Popover from '..';
 
 describe('Popover', () => {
   it('should show overlay when trigger is clicked', () => {
-    const popover = mount(
+    const popover = mount<Popover>(
       <Popover content="console.log('hello world')" title="code" trigger="click">
         <span>show me your code</span>
       </Popover>,
