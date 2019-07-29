@@ -6,6 +6,7 @@ import Layout from '../../layout';
 import raf from '../../_util/raf';
 
 jest.mock('mutationobserver-shim', () => {
+  // @ts-ignore
   global.MutationObserver = function MutationObserver() {
     this.observe = () => {};
     this.disconnect = () => {};
@@ -374,7 +375,7 @@ describe('Menu', () => {
       jest.useRealTimers();
     });
 
-    const toggleMenu = (wrapper, index, event) => {
+    const toggleMenu = (wrapper: any, index: number, event: any) => {
       wrapper
         .find('.ant-menu-submenu-title')
         .at(index)
@@ -509,7 +510,7 @@ describe('Menu', () => {
         collapsed: false,
       };
 
-      onCollapse = collapsed => this.setState({ collapsed });
+      onCollapse = (collapsed: boolean) => this.setState({ collapsed });
 
       render() {
         const { collapsed } = this.state;
@@ -561,12 +562,13 @@ describe('Menu', () => {
   });
 
   it('get correct animation type when switched from inline', () => {
-    const wrapper = mount(<Menu mode="inline" />);
+    const wrapper = mount<Menu>(<Menu mode="inline" />);
     wrapper.setProps({ mode: 'horizontal' });
+    const component: any = wrapper
+      .find('InternalMenu')
+      .instance();
     expect(
-      wrapper
-        .find('InternalMenu')
-        .instance()
+      component
         .getMenuOpenAnimation(''),
     ).toBe('');
   });
