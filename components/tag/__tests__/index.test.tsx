@@ -24,7 +24,7 @@ describe('Tag', () => {
   });
 
   it('should not be closed when prevent default', () => {
-    const onClose = e => {
+    const onClose = (e: Event) => {
       e.preventDefault();
     };
     const wrapper = mount(<Tag closable onClose={onClose} />);
