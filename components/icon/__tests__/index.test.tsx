@@ -67,7 +67,7 @@ describe('Icon', () => {
 
   it('should support wrapped by Tooltip', () => {
     const onVisibleChange = jest.fn();
-    const wrapper = mount(
+    const wrapper = mount<Tooltip>(
       <Tooltip
         title="xxxxx"
         mouseEnterDelay={0}
@@ -81,11 +81,11 @@ describe('Icon', () => {
     const icon = wrapper.find('i').at(0);
     icon.simulate('mouseenter');
     expect(onVisibleChange).toHaveBeenCalledWith(true);
-    expect(wrapper.instance().tooltip.props.visible).toBe(true);
+    expect(wrapper.instance()[`tooltip`].props.visible).toBe(true);
 
     icon.simulate('mouseleave');
     expect(onVisibleChange).toHaveBeenCalledWith(false);
-    expect(wrapper.instance().tooltip.props.visible).toBe(false);
+    expect(wrapper.instance()[`tooltip`].props.visible).toBe(false);
   });
 
   it('should support custom usage of children', () => {
@@ -98,13 +98,13 @@ describe('Icon', () => {
     const renderSvg = () => (
       <svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor" />
     );
-    const SvgIcon = props => <Icon component={renderSvg} {...props} />;
+    const SvgIcon = (props: any) => <Icon component={renderSvg} {...props} />;
 
     expect(mount(<SvgIcon />).render()).toMatchSnapshot();
   });
 
   describe('warning on conflicting theme', () => {
-    let errorSpy;
+    let errorSpy: any;
     beforeEach(() => {
       errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     });
@@ -139,7 +139,7 @@ describe('Icon', () => {
                   <stop offset="90%" stopColor="#F3F" />
                 </linearGradient>
               </defs>
-              {React.Children.map(svgProps.children, child =>
+              {React.Children.map(svgProps.children, (child: any) =>
                 React.cloneElement(
                   child,
                   child.type === 'path' ? { fill: 'scriptUrl(#gradient)' } : {},
@@ -157,7 +157,7 @@ describe('Icon', () => {
   });
 
   it('should support svg react component', () => {
-    const SvgComponent = props => (
+    const SvgComponent = (props: any) => (
       <svg viewBox="0 0 24 24" {...props}>
         <title>Cool Home</title>
         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
@@ -199,7 +199,7 @@ describe('utils', () => {
       'check-circle-fill',
       'check-circle-twotone',
     ];
-    const result = testCases.map(type => getThemeFromTypeName(type));
+    const result = testCases.map((type: string) => getThemeFromTypeName(type));
     expect(result).toEqual([null, 'outlined', 'filled', 'twoTone']);
   });
 
@@ -214,7 +214,8 @@ describe('utils', () => {
       { type: 'home-o', theme: 'twoTone' },
       { type: 'home-o', theme: 'This-is-the-secret' },
     ];
-    const result = testCases.map(({ type, theme }) => withThemeSuffix(type, theme));
+    // eslint-disable-next-line no-undef
+    const result = testCases.map(({ type, theme }: {type: string, theme: any}) => withThemeSuffix(type, theme));
     expect(result).toEqual([
       'home-fill',
       'home-o',
