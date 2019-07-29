@@ -101,6 +101,7 @@ describe('Progress', () => {
   // https://github.com/ant-design/ant-design/pull/15951#discussion_r273062969
   it('should show success status when status is invalid', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    // @ts-ignore
     const wrapper = mount(<Progress percent={100} status="invalid" />);
     expect(wrapper.find('.ant-progress-status-success')).toHaveLength(1);
     errorSpy.mockRestore();
