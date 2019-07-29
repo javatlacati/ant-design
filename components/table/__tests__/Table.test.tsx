@@ -48,7 +48,7 @@ describe('Table', () => {
         dataIndex: 'name',
       },
     ];
-    const wrapper = shallow(<Table columns={columns} />);
+    const wrapper = shallow<Table<any>>(<Table columns={columns} />);
     const newColumns = [
       {
         title: 'Title',
@@ -80,8 +80,8 @@ describe('Table', () => {
   });
 
   it('renders custom components correctly when it changes', () => {
-    const BodyWrapper1 = props => <tbody id="wrapper1" {...props} />;
-    const BodyWrapper2 = props => <tbody id="wrapper2" {...props} />;
+    const BodyWrapper1 = (props: any) => <tbody id="wrapper1" {...props} />;
+    const BodyWrapper2 = (props: any) => <tbody id="wrapper2" {...props} />;
     const wrapper = mount(<Table components={{ body: { wrapper: BodyWrapper1 } }} />);
     wrapper.setProps({ components: { body: { wrapper: BodyWrapper2 } } });
     expect(wrapper.find('tbody').props().id).toBe('wrapper2');

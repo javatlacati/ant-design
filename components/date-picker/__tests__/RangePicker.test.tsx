@@ -389,7 +389,9 @@ describe('RangePicker', () => {
     const firstInput = wrapper.find('.ant-calendar-input').first();
     const secondInput = wrapper.find('.ant-calendar-input').last();
     firstInput.simulate('change', { target: { value: moment().add(1, 'day').format('YYYY-MM-DD')}});
-    expect(firstInput.getDOMNode().value).toBe(moment().add(1, 'day').format('YYYY-MM-DD'));
-    expect(secondInput.getDOMNode().value).toBe('');
+    const domNode: any = firstInput.getDOMNode();
+    expect(domNode.value).toBe(moment().add(1, 'day').format('YYYY-MM-DD'));
+    const domNode1: any = secondInput.getDOMNode();
+    expect(domNode1.value).toBe('');
   });
 });

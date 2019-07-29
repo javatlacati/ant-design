@@ -72,10 +72,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filterMultiple: false,
-          },
+                Object.assign({}, column, { filterMultiple: false }),
         ],
       }),
     );
@@ -94,10 +91,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filterDropdown: filter,
-          },
+                Object.assign({}, column, { filterDropdown: filter }),
         ],
       }),
     );
@@ -130,10 +124,7 @@ describe('Table.filter', () => {
     const wrapper = mount<Table<any>>(
       createTable({
         columns: [
-          {
-            ...column,
-            filterDropdown: filter,
-          },
+                Object.assign({}, column, { filterDropdown: filter }),
         ],
       }),
     );
@@ -164,10 +155,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filterDropdownVisible: true,
-          },
+                Object.assign({}, column, { filterDropdownVisible: true }),
         ],
       }),
     );
@@ -177,10 +165,7 @@ describe('Table.filter', () => {
 
     wrapper.setProps({
       columns: [
-        {
-          ...column,
-          filterDropdownVisible: false,
-        },
+                Object.assign({}, column, { filterDropdownVisible: false }),
       ],
     });
 
@@ -192,10 +177,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filterDropdownVisible: true,
-          },
+                Object.assign({}, column, { filterDropdownVisible: true }),
         ],
       }),
     );
@@ -218,10 +200,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            onFilterDropdownVisibleChange: handleChange,
-          },
+                Object.assign({}, column, { onFilterDropdownVisibleChange: handleChange }),
         ],
       }),
     );
@@ -238,10 +217,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filteredValue: ['Lucy'],
-          },
+                Object.assign({}, column, { filteredValue: ['Lucy'] }),
         ],
       }),
     );
@@ -249,10 +225,7 @@ describe('Table.filter', () => {
     expect(wrapper.find('tbody tr').length).toBe(1);
     wrapper.setProps({
       columns: [
-        {
-          ...column,
-          filteredValue: [],
-        },
+                Object.assign({}, column, { filteredValue: [] }),
       ],
     });
     expect(wrapper.find('tbody tr').length).toBe(4);
@@ -262,20 +235,14 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filteredValue: ['Lucy'],
-          },
+                Object.assign({}, column, { filteredValue: ['Lucy'] }),
         ],
       }),
     );
 
     expect(wrapper.find('tbody tr').length).toBe(1);
     // @ts-ignore
-    wrapper.setProps({columns: [{filteredValue: null,
-          ...column,
-        },
-      ],
+        wrapper.setProps({ columns: [Object.assign({ filteredValue: null }, column),],
     });
     expect(wrapper.find('tbody tr').length).toBe(4);
   });
@@ -336,10 +303,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filters,
-          },
+                Object.assign({}, column, { filters }),
         ],
       }),
     );
@@ -375,11 +339,8 @@ describe('Table.filter', () => {
         const wrapper = mount(
           createTable({
             columns: [
-              {
-                ...column,
-                filters,
-                onFilter,
-              },
+                        Object.assign({}, column, { filters,
+                            onFilter }),
             ],
           }),
         );
@@ -428,10 +389,12 @@ describe('Table.filter', () => {
     const { Column } = Table;
 
     class App extends React.Component {
-      state = {
-        filters: {},
-      };
-
+      constructor(props: Readonly<any>) {
+        super(props);
+        this.state = {
+          filters: {},
+        };
+      }
       handleChange = (_: any, filters: any) => {
         this.setState({ filters });
       };
@@ -507,10 +470,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filters: [{ text: 'Jack', value: 'Jack' }, { text: 'Lucy', value: 'Lucy' }],
-          },
+                Object.assign({}, column, { filters: [{ text: 'Jack', value: 'Jack' }, { text: 'Lucy', value: 'Lucy' }] }),
         ],
         onChange: handleChange,
       }),
@@ -537,10 +497,7 @@ describe('Table.filter', () => {
     const wrapper = mount(
       createTable({
         columns: [
-          {
-            ...column,
-            filterIcon: (filtered: boolean) => <span>{filtered ? 'filtered' : 'unfiltered'}</span>,
-          },
+                Object.assign({}, column, { filterIcon: (filtered: any) => <span>{filtered ? 'filtered' : 'unfiltered'}</span> }),
         ],
       }),
     );
@@ -577,10 +534,13 @@ describe('Table.filter', () => {
   // https://github.com/ant-design/ant-design/issues/13028
   it('reset dropdown filter correctly', () => {
     class Demo extends React.Component {
-      state: {name?: string} = {};
+      constructor(props: Readonly<any>) {
+        super(props);
+        this.state = {};
+      }
 
       onChange = () => {
-        this.setState({ name: '' });
+        this.setState({name: ''});
       };
 
       render() {
@@ -628,6 +588,8 @@ describe('Table.filter', () => {
     const component1: any = wrapper.find('.ant-input').instance();
     expect(component1.value).toBe('');
   });
+//TODO I think this test was deleted
+
 
   // https://github.com/ant-design/ant-design/issues/17833
   it('should not trigger onChange when bluring custom filterDropdown', () => {
@@ -640,7 +602,7 @@ describe('Table.filter', () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            filterDropdown: ({ setSelectedKeys }) => (
+            filterDropdown: ({ setSelectedKeys }: any) => (
               <input onChange={e => setSelectedKeys([e.target.value])} />
             ),
           },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { mount, render } from 'enzyme';
 import Table from '..';
 import Checkbox from '../../checkbox';
@@ -28,33 +28,37 @@ describe('Table.rowSelection', () => {
     { key: 3, name: 'Jerry' },
   ];
 
-  function createTable(props = {}) {
+  function createTable(props = {}): ReactElement<Table<any>> {
+    // @ts-ignore
     return <Table columns={columns} dataSource={data} rowSelection={{}} {...props} />;
   }
 
-  function renderedNames(wrapper) {
-    return wrapper.find('TableRow').map(row => row.props().record.name);
+  function renderedNames(wrapper: any) {
+    return wrapper.find('TableRow').map((row: any) => row.props().record.name);
   }
 
   it('select by checkbox', () => {
-    const wrapper = mount(createTable());
+    const wrapper = mount<Table<any>>(createTable());
     const checkboxes = wrapper.find('input');
     const checkboxAll = checkboxes.first();
 
     checkboxAll.simulate('change', { target: { checked: true } });
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component: any = wrapper.instance();
+    expect(component.store.getState()).toEqual({
       selectedRowKeys: [0, 1, 2, 3],
       selectionDirty: true,
     });
 
     checkboxes.at(1).simulate('change', { target: { checked: false } });
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component1: any = wrapper.instance();
+    expect(component1.store.getState()).toEqual({
       selectedRowKeys: [1, 2, 3],
       selectionDirty: true,
     });
 
     checkboxes.at(1).simulate('change', { target: { checked: true } });
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component2: any = wrapper.instance();
+    expect(component2.store.getState()).toEqual({
       selectedRowKeys: [1, 2, 3, 0],
       selectionDirty: true,
     });
@@ -67,13 +71,15 @@ describe('Table.rowSelection', () => {
     expect(radios.length).toBe(4);
 
     radios.first().simulate('change', { target: { checked: true } });
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component: any = wrapper.instance();
+    expect(component.store.getState()).toEqual({
       selectedRowKeys: [0],
       selectionDirty: true,
     });
 
     radios.last().simulate('change', { target: { checked: true } });
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component1: any = wrapper.instance();
+    expect(component1.store.getState()).toEqual({
       selectedRowKeys: [3],
       selectionDirty: true,
     });
@@ -81,7 +87,7 @@ describe('Table.rowSelection', () => {
 
   it('pass getCheckboxProps to checkbox', () => {
     const rowSelection = {
-      getCheckboxProps: record => ({
+      getCheckboxProps: (record: any) => ({
         disabled: record.name === 'Lucy',
         name: record.name,
       }),
@@ -115,7 +121,7 @@ describe('Table.rowSelection', () => {
   // https://github.com/ant-design/ant-design/issues/4020
   it('handles defaultChecked', () => {
     const rowSelection = {
-      getCheckboxProps: record => ({
+      getCheckboxProps: (record: any) => ({
         defaultChecked: record.key === 0,
       }),
     };
@@ -137,16 +143,19 @@ describe('Table.rowSelection', () => {
   });
 
   it('can be controlled', () => {
-    const wrapper = mount(createTable({ rowSelection: { selectedRowKeys: [0] } }));
+    const wrapper = mount<Table<any>>(createTable({ rowSelection: { selectedRowKeys: [0] } }));
 
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component: any = wrapper.instance();
+    expect(component.store.getState()).toEqual({
       selectedRowKeys: [0],
       selectionDirty: false,
     });
 
-    wrapper.setProps({ rowSelection: { selectedRowKeys: [1] } });
+    const props: any = { rowSelection: { selectedRowKeys: [1] } };
+    wrapper.setProps(props);
 
-    expect(wrapper.instance().store.getState()).toEqual({
+    const component1: any = wrapper.instance();
+    expect(component1.store.getState()).toEqual({
       selectedRowKeys: [1],
       selectionDirty: false,
     });
@@ -240,10 +249,11 @@ describe('Table.rowSelection', () => {
       selections: true,
     };
     const wrapper = mount(createTable({ rowSelection }));
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = render(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper).toMatchSnapshot();
@@ -257,10 +267,11 @@ describe('Table.rowSelection', () => {
     };
     const wrapper = mount(createTable({ rowSelection }));
 
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     dropdownWrapper
@@ -281,10 +292,11 @@ describe('Table.rowSelection', () => {
     const checkboxes = wrapper.find('input');
 
     checkboxes.at(1).simulate('change', { target: { checked: true } });
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     dropdownWrapper
@@ -314,10 +326,11 @@ describe('Table.rowSelection', () => {
     };
     const wrapper = mount(createTable({ rowSelection }));
 
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper.find('.ant-dropdown-menu-item').length).toBe(4);
@@ -350,10 +363,11 @@ describe('Table.rowSelection', () => {
       ],
     };
     const wrapper = mount(createTable({ rowSelection }));
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper.find('.ant-dropdown-menu-item').length).toBe(2);
@@ -379,10 +393,11 @@ describe('Table.rowSelection', () => {
     };
     const wrapper = mount(createTable({ rowSelection }));
 
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper.find('.ant-dropdown-menu-item').length).toBe(2);
@@ -403,14 +418,15 @@ describe('Table.rowSelection', () => {
   // https://github.com/ant-design/ant-design/issues/4245
   it('handles disabled checkbox correctly when dataSource changes', () => {
     const rowSelection = {
-      getCheckboxProps: record => ({ disabled: record.disabled }),
+      getCheckboxProps: (record: any) => ({ disabled: record.disabled }),
     };
     const wrapper = mount(createTable({ rowSelection }));
     const newData = [
       { key: 0, name: 'Jack', disabled: true },
       { key: 1, name: 'Lucy', disabled: true },
     ];
-    wrapper.setProps({ dataSource: newData });
+    const props: any = { dataSource: newData };
+    wrapper.setProps(props);
     wrapper.find('input').forEach(checkbox => {
       expect(checkbox.props().disabled).toBe(true);
     });
@@ -585,7 +601,7 @@ describe('Table.rowSelection', () => {
           },
         ],
         filterDropdownVisible: true,
-        onFilter: (value, record) => record.name.indexOf(value) === 0,
+        onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
       },
     ];
 
@@ -598,8 +614,8 @@ describe('Table.rowSelection', () => {
       <Table columns={filterColumns} dataSource={data} rowSelection={rowSelection} />,
     );
 
-    function clickFilter(indexList) {
-      indexList.forEach(index => {
+    function clickFilter(indexList: number[]) {
+      indexList.forEach((index:number) => {
         wrapper
           .find('.ant-dropdown-menu-item .ant-checkbox-wrapper')
           .at(index)
