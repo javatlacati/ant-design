@@ -14,7 +14,7 @@ const Apps = () => (
   </ul>
 );
 
-const breadcrumbNameMap = {
+const breadcrumbNameMap: any = {
   '/apps': 'Application List',
   '/apps/1': 'Application1',
   '/apps/2': 'Application2',
@@ -22,10 +22,10 @@ const breadcrumbNameMap = {
   '/apps/2/detail': 'Detail',
 };
 
-const Home = withRouter(props => {
+const Home = withRouter((props: any) => {
   const { location, history } = props;
-  const pathSnippets = location.pathname.split('/').filter(i => i);
-  const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+  const pathSnippets = location.pathname.split('/').filter((i: any) => i);
+  const extraBreadcrumbItems = pathSnippets.map((_: any, index: number) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
     return (
       <Breadcrumb.Item key={url}>
