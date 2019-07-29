@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import Skeleton from '..';
 
 describe('Skeleton', () => {
-  const genSkeleton = props =>
+  const genSkeleton = (props: any) =>
     mount(
       <Skeleton loading {...props}>
         Bamboo
