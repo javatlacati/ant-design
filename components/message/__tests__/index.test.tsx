@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import message from '..';
+import message, { MessageType } from '..';
 import Icon from '../../icon';
 
 describe('message', () => {
@@ -18,7 +18,8 @@ describe('message', () => {
       top: 100,
     });
     message.info('whatever');
-    expect(document.querySelectorAll('.ant-message')[0].style.top).toBe('100px');
+    const elementNodeListOfElement: any = document.querySelectorAll('.ant-message')[0];
+    expect(elementNodeListOfElement.style.top).toBe('100px');
   });
 
   it('should be able to config getContainer', () => {
@@ -80,7 +81,7 @@ describe('message', () => {
     const now = Date.now();
     message.info('whatever', () => {
       // calculate the approximately duration value
-      const aboutDuration = parseInt((Date.now() - now) / 1000, 10);
+      const aboutDuration = ~~((Date.now() - now) / 1000);
       expect(aboutDuration).toBe(defaultDuration);
       done();
     });
@@ -90,17 +91,18 @@ describe('message', () => {
     jest.useRealTimers();
     const defaultDuration = 3;
     const now = Date.now();
-    message.info('whatever').then(() => {
+    const content: any = 'whatever';
+    message.info(content).then(() => {
       // calculate the approximately duration value
-      const aboutDuration = parseInt((Date.now() - now) / 1000, 10);
+      const aboutDuration = ~~((Date.now() - now) / 1000);
       expect(aboutDuration).toBe(defaultDuration);
       done();
-    });
+    }, ()=>{});
   });
 
   // https://github.com/ant-design/ant-design/issues/8201
   it('should hide message correctly', () => {
-    let hide;
+    let hide: MessageType;
     class Test extends React.Component {
       componentDidMount() {
         hide = message.loading('Action in progress..', 0);
@@ -112,18 +114,23 @@ describe('message', () => {
     }
     mount(<Test />);
     expect(document.querySelectorAll('.ant-message-notice').length).toBe(1);
-    hide();
+    // @ts-ignore
+    if(hide) {
+      hide();
+    }
     jest.runAllTimers();
     expect(document.querySelectorAll('.ant-message-notice').length).toBe(0);
   });
 
   it('should allow custom icon', () => {
-    message.open({ content: 'Message', icon: <Icon type="smile-o" /> });
+    const args: any = { content: 'Message', icon: <Icon type="smile-o" /> };
+    message.open(args);
     expect(document.querySelectorAll('.anticon-smile-o').length).toBe(1);
   });
 
   it('should have no icon', () => {
-    message.open({ content: 'Message' });
+    const args: any = { content: 'Message' };
+    message.open(args);
     expect(document.querySelectorAll('.ant-message-notice .anticon').length).toBe(0);
   });
 
