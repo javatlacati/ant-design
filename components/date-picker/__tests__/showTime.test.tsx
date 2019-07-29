@@ -13,12 +13,11 @@ describe('DatePicker with showTime', () => {
       <DatePicker showTime open onChange={onChangeFn} onOpenChange={onOpenChangeFn} />,
     );
 
-    const calendarWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
-        .getComponent(),
-    );
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    const calendarWrapper = mount(component.getComponent(),);
     calendarWrapper
       .find('.ant-calendar-date')
       .at(0)
@@ -43,12 +42,11 @@ describe('DatePicker with showTime', () => {
       />,
     );
 
-    const calendarWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
-        .getComponent(),
-    );
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    const calendarWrapper = mount(component.getComponent(),);
     calendarWrapper.find('.ant-calendar-ok-btn').simulate('click');
     expect(onOkFn).toHaveBeenCalled();
     expect(onOpenChangeFn).toHaveBeenCalledWith(false);
@@ -63,12 +61,11 @@ describe('DatePicker with showTime', () => {
       <DatePicker showTime open onChange={onChangeFn} onOpenChange={onOpenChangeFn} />,
     );
 
-    const calendarWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
-        .getComponent(),
-    );
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    const calendarWrapper = mount(component.getComponent(),);
     calendarWrapper.find('.ant-calendar-today-btn').simulate('click');
     expect(onOpenChangeFn).toHaveBeenCalledWith(false);
     expect(onChangeFn).toHaveBeenCalled();
@@ -76,12 +73,11 @@ describe('DatePicker with showTime', () => {
 
   it('should have correct className when use12Hours is true', () => {
     const wrapper = mount(<DatePicker showTime={{ use12Hours: true }} open />);
-    const calendarWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
-        .getComponent(),
-    );
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    const calendarWrapper = mount(component.getComponent(),);
     expect(calendarWrapper.find('.ant-calendar-time-picker-column-4').length).toBe(0);
     calendarWrapper
       .find('.ant-calendar-time-picker-btn')
@@ -99,7 +95,7 @@ describe('RangePicker with showTime', () => {
       <RangePicker showTime open onChange={onChangeFn} onOpenChange={onOpenChangeFn} />,
     );
 
-    function findNode(selector) {
+    function findNode(selector: string) {
       return wrapper.find('Trigger').find(selector);
     }
 
@@ -136,7 +132,7 @@ describe('RangePicker with showTime', () => {
       />,
     );
 
-    function findNode(selector) {
+    function findNode(selector: string) {
       return wrapper.find('Trigger').find(selector);
     }
 

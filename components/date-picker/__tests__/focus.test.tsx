@@ -10,7 +10,7 @@ const { MonthPicker, WeekPicker, RangePicker } = DatePicker;
 
 describe('DatePicker', () => {
   beforeEach(() => {
-    MockDate.set(moment('2016-11-22'));
+    MockDate.set(moment('2016-11-22').toDate());
   });
 
   afterEach(() => {
@@ -55,7 +55,7 @@ describe('DatePicker', () => {
 
   it('should not auto focus trigger input when open prop is true in DatePicker', () => {
     const wrapper = mount(<DatePicker open />);
-    const wrapperInput = mount(<Input />);
+    const wrapperInput = mount<Input>(<Input />);
     wrapperInput.instance().select();
     expect(wrapper.find('.ant-calendar-picker-input').getDOMNode()).not.toBe(
       document.activeElement,
@@ -64,14 +64,14 @@ describe('DatePicker', () => {
 
   it('should not auto focus trigger input when open prop is true in RangePicker', () => {
     const wrapper = mount(<RangePicker open />);
-    const wrapperInput = mount(<Input />);
+    const wrapperInput = mount<Input>(<Input />);
     wrapperInput.instance().select();
     expect(wrapper.find('.ant-calendar-picker').getDOMNode()).not.toBe(document.activeElement);
   });
 
   it('should not auto focus trigger input when open prop is true in WeekPicker', () => {
     const wrapper = mount(<WeekPicker open />);
-    const wrapperInput = mount(<Input />);
+    const wrapperInput = mount<Input>(<Input />);
     wrapperInput.instance().select();
     expect(wrapper.find('.ant-calendar-picker-input').getDOMNode()).not.toBe(
       document.activeElement,
@@ -80,7 +80,7 @@ describe('DatePicker', () => {
 
   it('should not auto focus trigger input when open prop is true in MonthPicker', () => {
     const wrapper = mount(<MonthPicker open />);
-    const wrapperInput = mount(<Input />);
+    const wrapperInput = mount<Input>(<Input />);
     wrapperInput.instance().select();
     expect(wrapper.find('.ant-calendar-picker-input').getDOMNode()).not.toBe(
       document.activeElement,

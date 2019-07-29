@@ -20,7 +20,7 @@ describe('Picker format by locale', () => {
   };
 
   const date = moment('2000-01-01', 'YYYY-MM-DD');
-  function matchPicker(name, Picker, props) {
+  function matchPicker(name: string, Picker: any, props?: any) {
     it(name, () => {
       const wrapper = mount(
         <LocaleProvider locale={myLocale}>
@@ -43,27 +43,21 @@ describe('MonthPicker and WeekPicker', () => {
     const birthday = moment('2000-01-01', 'YYYY-MM-DD').locale('zh-cn');
     const wrapper = mount(<MonthPicker open />);
     wrapper.setProps({ value: birthday });
-    expect(
-      render(
-        wrapper
-          .find('Trigger')
-          .instance()
-          .getComponent(),
-      ),
-    ).toMatchSnapshot();
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    expect(render(component.getComponent(),),).toMatchSnapshot();
   });
 
   it('render WeekPicker', () => {
     const birthday = moment('2000-01-01', 'YYYY-MM-DD').locale('zh-cn');
     const wrapper = mount(<WeekPicker open />);
     wrapper.setProps({ value: birthday });
-    expect(
-      render(
-        wrapper
-          .find('Trigger')
-          .instance()
-          .getComponent(),
-      ),
-    ).toMatchSnapshot();
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    expect(render(component.getComponent(),),).toMatchSnapshot();
   });
 });

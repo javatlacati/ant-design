@@ -62,13 +62,10 @@ describe('WeekPicker', () => {
     const wrapper = mount(
       <WeekPicker open dateRender={current => <span>{current.format('YYYY-MM-DD')}</span>} />,
     );
-    expect(
-      render(
-        wrapper
-          .find('Trigger')
-          .instance()
-          .getComponent(),
-      ),
-    ).toMatchSnapshot();
+    const component = wrapper
+      .find('Trigger')
+      .instance();
+    // @ts-ignore
+    expect(render(component.getComponent(),),).toMatchSnapshot();
   });
 });
