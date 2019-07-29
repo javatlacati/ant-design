@@ -2,6 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Search from '../Search';
 import Button from '../../button';
+// @ts-ignore
 import focusTest from '../../../tests/shared/focusTest';
 
 describe('Input.Search', () => {

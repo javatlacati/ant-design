@@ -27,16 +27,17 @@ describe('Input', () => {
   });
 
   it('select()', () => {
-    const wrapper = mount(<Input />);
+    const wrapper = mount<Input>(<Input />);
     wrapper.instance().select();
   });
 
   describe('focus trigger warning', () => {
     it('not trigger', () => {
-      const wrapper = mount(<Input suffix="bamboo" />);
-      wrapper
+      const wrapper = mount<Input>(<Input suffix="bamboo" />);
+      const component = wrapper
         .find('input')
-        .instance()
+        .instance() as Input;
+      component
         .focus();
       wrapper.setProps({
         suffix: 'light',
@@ -44,10 +45,11 @@ describe('Input', () => {
       expect(errorSpy).not.toHaveBeenCalled();
     });
     it('trigger warning', () => {
-      const wrapper = mount(<Input />);
-      wrapper
+      const wrapper = mount<Input>(<Input />);
+      const component = wrapper
         .find('input')
-        .instance()
+        .instance() as Input;
+      component
         .focus();
       wrapper.setProps({
         suffix: 'light',
@@ -72,6 +74,7 @@ describe('TextArea', () => {
 
   it('should auto calculate height according to content length', () => {
     const wrapper = mount(<TextArea value="" readOnly autosize />);
+    // @ts-ignore
     const mockFunc = jest.spyOn(wrapper.instance(), 'resizeTextarea');
     wrapper.setProps({ value: '1111\n2222\n3333' });
     jest.runAllTimers();
@@ -139,14 +142,14 @@ describe('TextArea', () => {
 
   it('minRows or maxRows is not null', () => {
     const wrapper = document.createElement('textarea');
-    expect(calculateNodeHeight(wrapper, 1, 1)).toEqual({
+    expect(calculateNodeHeight(wrapper, true, 1)).toEqual({
       height: 0,
       maxHeight: 9007199254740991,
       minHeight: -4,
       overflowY: undefined,
     });
     wrapper.style.boxSizing = 'content-box';
-    expect(calculateNodeHeight(wrapper, 1, 1)).toEqual({
+    expect(calculateNodeHeight(wrapper, true, 1)).toEqual({
       height: -4,
       maxHeight: 9007199254740991,
       minHeight: -4,
@@ -156,6 +159,7 @@ describe('TextArea', () => {
 
   it('when prop value not in this.props, resizeTextarea should be called', () => {
     const wrapper = mount(<TextArea aria-label="textarea" />);
+    // @ts-ignore
     const resizeTextarea = jest.spyOn(wrapper.instance(), 'resizeTextarea');
     wrapper.find('textarea').simulate('change', 'test');
     expect(resizeTextarea).toHaveBeenCalled();
@@ -164,10 +168,11 @@ describe('TextArea', () => {
   it('handleKeyDown', () => {
     const onPressEnter = jest.fn();
     const onKeyDown = jest.fn();
-    const wrapper = mount(
+    const wrapper = mount<Input>(
       <TextArea onPressEnter={onPressEnter} onKeyDown={onKeyDown} aria-label="textarea" />,
     );
-    wrapper.instance().handleKeyDown({ keyCode: 13 });
+    const newVar: any = { keyCode: 13 };
+    wrapper.instance().handleKeyDown(newVar);
     expect(onPressEnter).toHaveBeenCalled();
     expect(onKeyDown).toHaveBeenCalled();
   });
@@ -177,14 +182,14 @@ describe('As Form Control', () => {
   it('should be reset when wrapped in form.getFieldDecorator without initialValue', () => {
     class Demo extends React.Component {
       reset = () => {
-        const { form } = this.props;
+        const { form }: any  = this.props;
         form.resetFields();
       };
 
       render() {
         const {
           form: { getFieldDecorator },
-        } = this.props;
+        }: any = this.props;
         return (
           <Form>
             <Form.Item>{getFieldDecorator('input')(<Input />)}</Form.Item>
@@ -266,42 +271,46 @@ describe('Input.Password', () => {
 
 describe('Input allowClear', () => {
   it('should change type when click', () => {
-    const wrapper = mount(<Input allowClear />);
+    const wrapper = mount<Input>(<Input allowClear />);
     wrapper.find('input').simulate('change', { target: { value: '111' } });
-    expect(wrapper.find('input').getDOMNode().value).toEqual('111');
+    const domNode1 = wrapper.find('input').getDOMNode() as HTMLInputElement;
+    expect(domNode1.value).toEqual('111');
     expect(wrapper).toMatchSnapshot();
     wrapper
       .find('.ant-input-clear-icon')
       .at(0)
       .simulate('click');
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('input').getDOMNode().value).toEqual('');
+    const domNode = wrapper.find('input').getDOMNode() as HTMLInputElement;
+    expect(domNode.value).toEqual('');
   });
 
   it('should not show icon if value is undefined, null or empty string', () => {
-    const wrappers = [null, undefined, ''].map(val => mount(<Input allowClear value={val} />));
+    const wrappers = [null, undefined, ''].map((val: string ) => mount<Input>(<Input allowClear value={val} />));
     wrappers.forEach(wrapper => {
-      expect(wrapper.find('input').getDOMNode().value).toEqual('');
+      const domNode = wrapper.find('input').getDOMNode() as HTMLInputElement;
+      expect(domNode.value).toEqual('');
       expect(wrapper.find('.ant-input-clear-icon').exists()).toEqual(false);
       expect(wrapper).toMatchSnapshot();
     });
   });
 
   it('should not show icon if defaultValue is undefined, null or empty string', () => {
-    const wrappers = [null, undefined, ''].map(val =>
-      mount(<Input allowClear defaultValue={val} />),
+    const wrappers = [null, undefined, ''].map((val: string) =>
+      mount<Input>(<Input allowClear defaultValue={val} />),
     );
     wrappers.forEach(wrapper => {
-      expect(wrapper.find('input').getDOMNode().value).toEqual('');
+      const domNode = wrapper.find('input').getDOMNode() as HTMLInputElement;
+      expect(domNode.value).toEqual('');
       expect(wrapper.find('.ant-input-clear-icon').exists()).toEqual(false);
       expect(wrapper).toMatchSnapshot();
     });
   });
 
   it('should trigger event correctly', () => {
-    let argumentEventObject;
+    let argumentEventObject: any;
     let argumentEventObjectValue;
-    const onChange = e => {
+    const onChange = (e: any) => {
       argumentEventObject = e;
       argumentEventObjectValue = e.target.value;
     };
@@ -312,33 +321,35 @@ describe('Input allowClear', () => {
       .simulate('click');
     expect(argumentEventObject.type).toBe('click');
     expect(argumentEventObjectValue).toBe('');
+    const domNode = wrapper
+      .find('input')
+      .at(0)
+      .getDOMNode() as HTMLInputElement;
     expect(
-      wrapper
-        .find('input')
-        .at(0)
-        .getDOMNode().value,
+      domNode.value,
     ).toBe('');
   });
 
   it('should trigger event correctly on controlled mode', () => {
-    let argumentEventObject;
+    let argumentEventObject: any;
     let argumentEventObjectValue;
-    const onChange = e => {
+    const onChange = (e: any) => {
       argumentEventObject = e;
       argumentEventObjectValue = e.target.value;
     };
-    const wrapper = mount(<Input allowClear value="111" onChange={onChange} />);
+    const wrapper = mount<Input>(<Input allowClear value="111" onChange={onChange} />);
     wrapper
       .find('.ant-input-clear-icon')
       .at(0)
       .simulate('click');
     expect(argumentEventObject.type).toBe('click');
     expect(argumentEventObjectValue).toBe('');
+    const domNode = wrapper
+      .find('input')
+      .at(0)
+      .getDOMNode() as HTMLInputElement;
     expect(
-      wrapper
-        .find('input')
-        .at(0)
-        .getDOMNode().value,
+      domNode.value,
     ).toBe('111');
   });
 
