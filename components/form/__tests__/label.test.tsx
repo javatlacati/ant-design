@@ -5,7 +5,7 @@ import Form from '..';
 describe('Form', () => {
   // Mock of `querySelector`
   const originQuerySelector = HTMLElement.prototype.querySelector;
-  HTMLElement.prototype.querySelector = function querySelector(str) {
+  HTMLElement.prototype.querySelector = function querySelector(str: string) {
     const match = str.match(/^\[id=('|")(.*)('|")]$/);
     const id = match && match[2];
 
@@ -161,12 +161,12 @@ describe('Form', () => {
 
   // https://github.com/ant-design/ant-design/issues/7351
   it('focus correct input when click label', () => {
-    const Form1 = Form.create()(({ form }) => (
+    const Form1 = Form.create()(({ form }: {form: any}) => (
       <Form>
         <Form.Item label="label 1">{form.getFieldDecorator('test')(<input />)}</Form.Item>
       </Form>
     ));
-    const Form2 = Form.create()(({ form }) => (
+    const Form2 = Form.create()(({ form }: {form: any}) => (
       <Form>
         <Form.Item label="label 2">{form.getFieldDecorator('test2')(<input />)}</Form.Item>
       </Form>
@@ -201,7 +201,7 @@ describe('Form', () => {
 
   // https://github.com/ant-design/ant-design/issues/7693
   it('should not throw error when is not a valid id', () => {
-    const Form1 = Form.create()(({ form }) => (
+    const Form1 = Form.create()(({ form }: {form: any}) => (
       <Form>
         <Form.Item label="label 1">
           {form.getFieldDecorator('member[0].name.firstname')(<input />)}

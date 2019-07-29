@@ -14,8 +14,8 @@ describe('Form', () => {
         message: 'Error message 2',
       },
     ];
-    let myForm;
-    const Form1 = Form.create()(({ form }) => {
+    let myForm: any;
+    const Form1 = Form.create()(({ form }: {form: any}) => {
       myForm = form;
       return (
         <Form>
@@ -47,8 +47,8 @@ describe('Form', () => {
         ),
       },
     ];
-    let myForm;
-    const Form1 = Form.create()(({ form }) => {
+    let myForm: any;
+    const Form1 = Form.create()(({ form }: {form: any}) => {
       myForm = form;
       return (
         <Form>
@@ -67,8 +67,8 @@ describe('Form', () => {
   });
 
   it('support error message with reactNode', () => {
-    let myForm;
-    const Form1 = Form.create()(({ form }) => {
+    let myForm: any;
+    const Form1 = Form.create()(({ form }: {form: any}) => {
       myForm = form;
       return (
         <Form>
@@ -81,7 +81,7 @@ describe('Form', () => {
 
     myForm.setFields({
       account: {
-        errors: [<div>Error 1</div>, <div>Error 2</div>],
+        errors: [<div key={1}>Error 1</div>, <div key={2}>Error 2</div>],
       },
     });
 
@@ -90,7 +90,7 @@ describe('Form', () => {
 
   it('should print warning for not generating help and validateStatus automatically', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const Form1 = Form.create()(({ form }) => {
+    const Form1 = Form.create()(({ form }: {form: any}) => {
       return (
         <Form>
           <Form.Item label="Account">
@@ -111,7 +111,7 @@ describe('Form', () => {
   // https://github.com/ant-design/ant-design/issues/14911
   it('should not print warning for not generating help and validateStatus automatically when help or validateStatus is specified', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const Form1 = Form.create()(({ form }) => {
+    const Form1 = Form.create()(({ form }: {form: any}) => {
       return (
         <Form>
           <Form.Item label="Account" help="custom help information">

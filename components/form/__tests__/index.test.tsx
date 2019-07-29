@@ -34,7 +34,7 @@ describe('Form', () => {
       let form;
       mount(
         <Wrapped
-          wrappedComponentRef={node => {
+          wrappedComponentRef={(node: any) => {
             form = node;
           }}
         />,
