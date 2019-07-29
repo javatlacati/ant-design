@@ -73,8 +73,8 @@ describe('Card', () => {
   });
 
   it('should not render when actions is number', () => {
-    const wrapper = mount(
-      <Card title="Card title" actions={11}>
+    // @ts-ignore
+    const wrapper = mount(<Card title="Card title" actions={11}>
         <p>Card content</p>
       </Card>,
     );
