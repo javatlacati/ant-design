@@ -23,7 +23,7 @@ describe('Calendar', () => {
 
   it('only Valid range should be selectable', () => {
     const onSelect = jest.fn();
-    const validRange = [Moment('2018-02-02'), Moment('2018-02-18')];
+    const validRange: [Moment.Moment, Moment.Moment] = [Moment('2018-02-02'), Moment('2018-02-18')];
     const wrapper = mount(
       <Calendar onSelect={onSelect} validRange={validRange} defaultValue={Moment('2018-02-02')} />,
     );
@@ -40,7 +40,7 @@ describe('Calendar', () => {
 
   it('dates other than in valid range should be disabled', () => {
     const onSelect = jest.fn();
-    const validRange = [Moment('2018-02-02'), Moment('2018-02-18')];
+    const validRange: [Moment.Moment, Moment.Moment] = [Moment('2018-02-02'), Moment('2018-02-18')];
     const wrapper = mount(
       <Calendar onSelect={onSelect} validRange={validRange} defaultValue={Moment('2018-02-02')} />,
     );
@@ -57,7 +57,7 @@ describe('Calendar', () => {
 
   it('months other than in valid range should be disabled', () => {
     const onSelect = jest.fn();
-    const validRange = [Moment('2018-02-02'), Moment('2018-05-18')];
+    const validRange: [Moment.Moment, Moment.Moment] = [Moment('2018-02-02'), Moment('2018-05-18')];
     const wrapper = mount(
       <Calendar
         onSelect={onSelect}
@@ -96,7 +96,7 @@ describe('Calendar', () => {
   });
 
   it('months other than in valid range should not be shown in header', () => {
-    const validRange = [Moment('2017-02-02'), Moment('2018-05-18')];
+    const validRange: [Moment.Moment, Moment.Moment] = [Moment('2017-02-02'), Moment('2018-05-18')];
     const wrapper = mount(<Calendar validRange={validRange} />);
     wrapper
       .find('.ant-fullcalendar-year-select')
@@ -115,8 +115,8 @@ describe('Calendar', () => {
   });
 
   it('getDateRange should returns a disabledDate function', () => {
-    const validRange = [Moment('2018-02-02'), Moment('2018-05-18')];
-    const wrapper = mount(<Calendar validRange={validRange} defaultValue={Moment('2018-02-02')} />);
+    const validRange: [Moment.Moment, Moment.Moment] = [Moment('2018-02-02'), Moment('2018-05-18')];
+    const wrapper = mount<Calendar>(<Calendar validRange={validRange} defaultValue={Moment('2018-02-02')} />);
     const instance = wrapper.instance();
     const disabledDate = instance.getDateRange(validRange);
     expect(disabledDate(Moment('2018-06-02'))).toBe(true);
@@ -126,7 +126,7 @@ describe('Calendar', () => {
   it('Calendar should change mode by prop', () => {
     const monthMode = 'month';
     const yearMode = 'year';
-    const wrapper = mount(<Calendar />);
+    const wrapper = mount<Calendar>(<Calendar />);
     expect(wrapper.state().mode).toEqual(monthMode);
     wrapper.setProps({ mode: 'year' });
     expect(wrapper.state().mode).toEqual(yearMode);
@@ -136,7 +136,7 @@ describe('Calendar', () => {
     const monthMode = 'month';
     const yearMode = 'year';
     const onPanelChangeStub = jest.fn();
-    const wrapper = mount(<Calendar mode={yearMode} onPanelChange={onPanelChangeStub} />);
+    const wrapper = mount<Calendar>(<Calendar mode={yearMode} onPanelChange={onPanelChangeStub} />);
     expect(wrapper.state().mode).toEqual(yearMode);
     wrapper.setProps({ mode: monthMode });
     expect(wrapper.state().mode).toEqual(monthMode);
@@ -144,7 +144,7 @@ describe('Calendar', () => {
   });
 
   it('Calendar should support locale', () => {
-    MockDate.set(Moment('2018-10-19'));
+    MockDate.set(Moment('2018-10-19').toISOString());
     // eslint-disable-next-line
     const zhCN = require('../locale/zh_CN').default;
     const wrapper = mount(<Calendar locale={zhCN} />);
@@ -154,7 +154,8 @@ describe('Calendar', () => {
 
   it('should trigger onPanelChange when click last month of date', () => {
     const onPanelChange = jest.fn();
-    const date = new Moment('1990-09-03');
+    // @ts-ignore
+    const date: Moment.Moment = new Moment('1990-09-03') as any as Moment.Moment;
     const wrapper = mount(<Calendar onPanelChange={onPanelChange} value={date} />);
 
     wrapper
@@ -168,8 +169,9 @@ describe('Calendar', () => {
 
   it('switch should work correctly without prop mode', async () => {
     const onPanelChange = jest.fn();
-    const date = new Moment(new Date(Date.UTC(2017, 7, 9, 8)));
-    const wrapper = mount(<Calendar onPanelChange={onPanelChange} value={date} />);
+    // @ts-ignore
+    const date: Moment.Moment = new Moment(new Date(Date.UTC(2017, 7, 9, 8))) as any as Moment.Moment;
+    const wrapper = mount<Calendar>(<Calendar onPanelChange={onPanelChange} value={date} />);
     expect(wrapper.state().mode).toBe('month');
     expect(wrapper.find('.ant-fullcalendar-table').length).toBe(1);
     expect(wrapper.find('.ant-fullcalendar-month-panel-table').length).toBe(0);
@@ -180,7 +182,7 @@ describe('Calendar', () => {
     expect(onPanelChange.mock.calls[0][1]).toEqual('year');
   });
 
-  const createWrapper = (start, end, value, onValueChange) => {
+  const createWrapper = (start: Moment.Moment, end: Moment.Moment, value: Moment.Moment, onValueChange: any) => {
     const wrapper = mount(
       <Header
         onValueChange={onValueChange}
@@ -200,27 +202,36 @@ describe('Calendar', () => {
   };
 
   it('if value.month > end.month, set value.month to end.month', () => {
-    const value = new Moment('1990-01-03');
-    const start = new Moment('2019-04-01');
-    const end = new Moment('2019-11-01');
+    // @ts-ignore
+    const value: Moment.Moment = new Moment('1990-01-03') as Moment.Moment;
+    // @ts-ignore
+    const start: Moment.Moment = new Moment('2019-04-01') as Moment.Moment;
+    // @ts-ignore
+    const end: Moment.Moment = new Moment('2019-11-01') as Moment.Moment;
     const onValueChange = jest.fn();
     createWrapper(start, end, value, onValueChange);
-    expect(onValueChange).toHaveBeenCalledWith(value.year('2019').month('3'));
+    expect(onValueChange).toHaveBeenCalledWith(value.year(2019).month('3'));
   });
 
   it('if start.month > value.month, set value.month to start.month ', () => {
-    const value = new Moment('1990-01-03');
-    const start = new Moment('2019-11-01');
-    const end = new Moment('2019-03-01');
+    // @ts-ignore
+    const value: Moment.Moment = new Moment('1990-01-03') as any as Moment.Moment;
+    // @ts-ignore
+    const start: Moment.Moment = new Moment('2019-11-01') as any as Moment.Moment;
+    // @ts-ignore
+    const end: Moment.Moment = new Moment('2019-03-01') as any as Moment.Moment;
     const onValueChange = jest.fn();
     createWrapper(start, end, value, onValueChange);
-    expect(onValueChange).toHaveBeenCalledWith(value.year('2019').month('10'));
+    expect(onValueChange).toHaveBeenCalledWith(value.year(2019).month('10'));
   });
 
   it('onMonthChange should work correctly', () => {
-    const start = new Moment('2018-11-01');
-    const end = new Moment('2019-03-01');
-    const value = new Moment('2018-12-03');
+    // @ts-ignore
+    const start: Moment.Moment = new Moment('2018-11-01') as any as Moment.Moment;
+    // @ts-ignore
+    const end: Moment.Moment = new Moment('2019-03-01') as any as Moment.Moment;
+    // @ts-ignore
+    const value: Moment.Moment = new Moment('2018-12-03') as any as Moment.Moment;
     const onValueChange = jest.fn();
     const wrapper = mount(
       <Header
@@ -244,7 +255,8 @@ describe('Calendar', () => {
 
   it('onTypeChange should work correctly', () => {
     const onTypeChange = jest.fn();
-    const value = new Moment('2018-12-03');
+    // @ts-ignore
+    const value: Moment.Moment = new Moment('2018-12-03') as any as Moment.Moment;
     const wrapper = mount(
       <Header
         onTypeChange={onTypeChange}
