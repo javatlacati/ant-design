@@ -4,7 +4,7 @@ import { render, mount } from 'enzyme';
 import Table from '..';
 
 describe('Table.sorter', () => {
-  const sorterFn = (a, b) => a.name[0].charCodeAt() - b.name[0].charCodeAt();
+  const sorterFn = (a: any, b: any) => a.name[0].charCodeAt() - b.name[0].charCodeAt();
 
   const column = {
     title: 'Name',
@@ -19,7 +19,7 @@ describe('Table.sorter', () => {
     { key: 3, name: 'Jerry' },
   ];
 
-  function createTable(tableProps, columnProps = {}) {
+  function createTable(tableProps?: any, columnProps = {}) {
     return (
       <Table
         columns={[
@@ -35,8 +35,8 @@ describe('Table.sorter', () => {
     );
   }
 
-  function renderedNames(wrapper) {
-    return wrapper.find('TableRow').map(row => row.props().record.name);
+  function renderedNames(wrapper: any) {
+    return wrapper.find('TableRow').map((row: any) => row.props().record.name);
   }
 
   it('renders sorter icon correctly', () => {
@@ -98,7 +98,7 @@ describe('Table.sorter', () => {
         {},
         {
           sortOrder: 'ascend',
-          sorter: (a, b, sortOrder) => {
+          sorter: (a: any, b: any, sortOrder: any) => {
             actualSortOrder = sortOrder;
             return sorterFn(a, b);
           },
@@ -136,7 +136,7 @@ describe('Table.sorter', () => {
   });
 
   it('works with grouping columns in controlled mode', () => {
-    const columns = [
+    const columns: any = [
       {
         title: 'group',
         key: 'group',
@@ -171,7 +171,7 @@ describe('Table.sorter', () => {
   it('Allow column title as render props with sortOrder argument', () => {
     const columns = [
       {
-        title: ({ sortOrder }) => <div className="custom-title">{sortOrder}</div>,
+        title: ({ sortOrder }: any) => <div className="custom-title">{sortOrder}</div>,
         key: 'group',
         sorter: true,
       },
@@ -256,7 +256,7 @@ describe('Table.sorter', () => {
         pagination: {},
       };
 
-      onChange = pagination => {
+      onChange = (pagination: any) => {
         this.setState({ pagination });
       };
 
@@ -351,7 +351,7 @@ describe('Table.sorter', () => {
         pagination: {},
       };
 
-      onChange = pagination => {
+      onChange = (pagination: any) => {
         this.setState({ pagination });
       };
 
@@ -361,7 +361,7 @@ describe('Table.sorter', () => {
             title: 'name',
             dataIndex: 'name',
             sorter: true,
-            render: text => text,
+            render: (text: string) => text,
           },
         ];
         const { pagination } = this.state;
@@ -447,7 +447,7 @@ describe('Table.sorter', () => {
         pagination: {},
       };
 
-      onChange = pagination => {
+      onChange = (pagination: any) => {
         this.setState({ pagination });
       };
 

@@ -1,21 +1,22 @@
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
-import { render, mount } from 'enzyme';
+import React, { ReactElement } from 'react';
+import { render, mount, ReactWrapper } from 'enzyme';
 import Table from '..';
 import Input from '../../input';
 import Button from '../../button';
 
-function getDropdownWrapper(wrapper) {
+function getDropdownWrapper(wrapper: ReactWrapper) {
+  const component: any = wrapper
+    .find('Trigger')
+    .instance();
   return mount(
-    wrapper
-      .find('Trigger')
-      .instance()
+    component
       .getComponent(),
   );
 }
 
 describe('Table.filter', () => {
-  const filterFn = (value, record) => record.name.indexOf(value) !== -1;
+  const filterFn = (value: any, record: any) => record.name.indexOf(value) !== -1;
   const column = {
     title: 'Name',
     dataIndex: 'name',
@@ -38,12 +39,15 @@ describe('Table.filter', () => {
     { key: 3, name: 'Jerry' },
   ];
 
-  function createTable(props) {
+  function createTable(props?: any): ReactElement<Table<any>> {
     return <Table columns={[column]} dataSource={data} pagination={false} {...props} />;
   }
 
-  function renderedNames(wrapper) {
-    return wrapper.find('TableRow').map(row => row.props().record.name);
+  function renderedNames(wrapper: ReactWrapper) {
+    return wrapper.find('TableRow').map(row => {
+      const props: any = row.props();
+      return props.record.name;
+    });
   }
 
   it('renders filter correctly', () => {
@@ -54,10 +58,11 @@ describe('Table.filter', () => {
 
   it('renders menu correctly', () => {
     const wrapper = mount(createTable());
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = render(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper).toMatchSnapshot();
@@ -74,10 +79,11 @@ describe('Table.filter', () => {
         ],
       }),
     );
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = render(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper).toMatchSnapshot();
@@ -96,17 +102,18 @@ describe('Table.filter', () => {
       }),
     );
 
+    const trigger: any = wrapper
+      .find('Trigger')
+      .instance();
     const dropdownWrapper = render(
-      wrapper
-        .find('Trigger')
-        .instance()
+      trigger
         .getComponent(),
     );
     expect(dropdownWrapper).toMatchSnapshot();
   });
 
   it('override custom filter correctly', () => {
-    const filter = ({ prefixCls, setSelectedKeys, confirm, clearFilters }) => (
+    const filter = ({ prefixCls, setSelectedKeys, confirm, clearFilters }: any) => (
       <div className={`${prefixCls}-view`} id="customFilter">
         <span onClick={() => setSelectedKeys([42])} id="setSelectedKeys">
           setSelectedKeys
@@ -120,7 +127,7 @@ describe('Table.filter', () => {
       </div>
     );
 
-    const wrapper = mount(
+    const wrapper = mount<Table<any>>(
       createTable({
         columns: [
           {
@@ -131,7 +138,7 @@ describe('Table.filter', () => {
       }),
     );
 
-    const filterMenu = wrapper.find('FilterMenu').instance();
+    const filterMenu: any = wrapper.find('FilterMenu').instance();
 
     // check if renderer well
     wrapper.find('i.ant-dropdown-trigger').simulate('click');
@@ -165,7 +172,7 @@ describe('Table.filter', () => {
       }),
     );
 
-    let dropdown = wrapper.find('Dropdown').first();
+    let dropdown: any = wrapper.find('Dropdown').first();
     expect(dropdown.props().visible).toBe(true);
 
     wrapper.setProps({
@@ -193,7 +200,7 @@ describe('Table.filter', () => {
       }),
     );
 
-    const filterMenu = wrapper.find('FilterMenu').instance();
+    const filterMenu: any = wrapper.find('FilterMenu').instance();
     expect(filterMenu.state.selectedKeys).toEqual([]);
     wrapper
       .find('FilterMenu')
@@ -201,7 +208,8 @@ describe('Table.filter', () => {
       .first()
       .simulate('click');
     expect(filterMenu.state.selectedKeys).toEqual(['boy']);
-    wrapper.setProps({ dataSource: [...data, { key: 999, name: 'Chris' }] });
+    const props: any = { dataSource: [...data, { key: 999, name: 'Chris' }] };
+    wrapper.setProps(props);
     expect(filterMenu.state.selectedKeys).toEqual(['boy']);
   });
 
@@ -263,11 +271,9 @@ describe('Table.filter', () => {
     );
 
     expect(wrapper.find('tbody tr').length).toBe(1);
-    wrapper.setProps({
-      columns: [
-        {
+    // @ts-ignore
+    wrapper.setProps({columns: [{filteredValue: null,
           ...column,
-          filteredValue: null,
         },
       ],
     });
@@ -426,12 +432,12 @@ describe('Table.filter', () => {
         filters: {},
       };
 
-      handleChange = (pagination, filters) => {
+      handleChange = (_: any, filters: any) => {
         this.setState({ filters });
       };
 
       render() {
-        const { filters } = this.state;
+        const { filters }: any = this.state;
         return (
           <Table dataSource={data} onChange={this.handleChange}>
             <Column
@@ -533,7 +539,7 @@ describe('Table.filter', () => {
         columns: [
           {
             ...column,
-            filterIcon: filtered => <span>{filtered ? 'filtered' : 'unfiltered'}</span>,
+            filterIcon: (filtered: boolean) => <span>{filtered ? 'filtered' : 'unfiltered'}</span>,
           },
         ],
       }),
@@ -571,14 +577,14 @@ describe('Table.filter', () => {
   // https://github.com/ant-design/ant-design/issues/13028
   it('reset dropdown filter correctly', () => {
     class Demo extends React.Component {
-      state = {};
+      state: {name?: string} = {};
 
       onChange = () => {
         this.setState({ name: '' });
       };
 
       render() {
-        const { name } = this.state;
+        const { name }: {name?: string} = this.state;
 
         return createTable({
           onChange: this.onChange,
@@ -588,7 +594,7 @@ describe('Table.filter', () => {
               dataIndex: 'name',
               key: 'name',
               filteredValue: name,
-              filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
+              filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }: any) => (
                 <div>
                   <Input
                     value={selectedKeys[0]}
@@ -611,21 +617,23 @@ describe('Table.filter', () => {
       .first()
       .simulate('click');
     wrapper.find('.ant-input').simulate('change', { target: { value: 'test' } });
-    expect(wrapper.find('.ant-input').instance().value).toBe('test');
+    const component: any = wrapper.find('.ant-input').instance();
+    expect(component.value).toBe('test');
     wrapper.find('.ant-btn').simulate('click');
 
     wrapper
       .find('.ant-dropdown-trigger')
       .first()
       .simulate('click');
-    expect(wrapper.find('.ant-input').instance().value).toBe('');
+    const component1: any = wrapper.find('.ant-input').instance();
+    expect(component1.value).toBe('');
   });
 
   // https://github.com/ant-design/ant-design/issues/17089
   it('not crash when dynamic change filter', () => {
     const onChange = jest.fn();
 
-    const Test = ({ filters }) => (
+    const Test = ({ filters }: any) => (
       <Table
         onChange={onChange}
         columns={[

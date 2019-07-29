@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import createStore from '../createStore';
 import SelectionBox from '../SelectionBox';
 
-const getDefaultStore = selectedRowKeys =>
+const getDefaultStore = (selectedRowKeys?: any) =>
   createStore({
     selectedRowKeys: selectedRowKeys || [],
     selectionDirty: false,

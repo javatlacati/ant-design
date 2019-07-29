@@ -19,12 +19,12 @@ describe('Table.pagination', () => {
 
   const pagination = { className: 'my-page', pageSize: 2 };
 
-  function createTable(props) {
+  function createTable(props?: any) {
     return <Table columns={columns} dataSource={data} pagination={pagination} {...props} />;
   }
 
-  function renderedNames(wrapper) {
-    return wrapper.find('TableRow').map(row => row.props().record.name);
+  function renderedNames(wrapper: any) {
+    return wrapper.find('TableRow').map((row: any) => row.props().record.name);
   }
 
   it('renders pagination correctly', () => {

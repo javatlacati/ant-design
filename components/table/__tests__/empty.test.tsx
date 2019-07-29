@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'enzyme';
-import Table from '..';
+import Table from "../Table";
 
 const columns = [
   { title: 'Column 1', dataIndex: 'address', key: '1' },
@@ -13,7 +13,7 @@ const columns = [
   { title: 'Column 8', dataIndex: 'address', key: '8' },
 ];
 
-const columnsFixed = [
+const columnsFixed: any = [
   {
     title: 'Full Name',
     width: 100,
