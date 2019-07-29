@@ -15,12 +15,15 @@ describe('Spin', () => {
         .at(0)
         .prop('style'),
     ).toBeFalsy();
-    expect(
-      wrapper
-        .find('.ant-spin')
-        .at(0)
-        .prop('style').background,
-    ).toBe('red');
+    const prop = wrapper
+      .find('.ant-spin')
+      .at(0)
+      .prop('style');
+    if (prop) {
+      expect(
+        prop.background,
+      ).toBe('red');
+    }
   });
 
   it("should render custom indicator when it's set", () => {
@@ -30,7 +33,7 @@ describe('Spin', () => {
   });
 
   it('should be controlled by spinning', () => {
-    const wrapper = mount(<Spin spinning={false} />);
+    const wrapper = mount<Spin>(<Spin spinning={false} />);
     expect(wrapper.instance().state.spinning).toBe(false);
     wrapper.setProps({ spinning: true });
     expect(wrapper.instance().state.spinning).toBe(true);
