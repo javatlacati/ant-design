@@ -3,12 +3,13 @@ import MockDate from 'mockdate';
 import moment from 'moment';
 import { mount } from 'enzyme';
 import Statistic from '..';
+import Countdown from "../Countdown";
 
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const delay = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
 
 describe('Statistic', () => {
   beforeAll(() => {
-    MockDate.set(moment('2018-11-28 00:00:00'));
+    MockDate.set(moment('2018-11-28 00:00:00').toISOString());
   });
 
   afterAll(() => {
@@ -54,7 +55,7 @@ describe('Statistic', () => {
         ['HH:mm:ss:SSS', '59:28:09:003'],
         ['DD-HH:mm:ss', '02-11:28:09'],
       ].forEach(([format, value]) => {
-        const wrapper = mount(<Statistic.Countdown format={format} value={now} />);
+        const wrapper = mount(<Statistic.Countdown format={format} value={now.toISOString()} />);
         expect(wrapper.find('.ant-statistic-content-value').text()).toEqual(value);
       });
     });
@@ -62,7 +63,7 @@ describe('Statistic', () => {
     it('time going', async () => {
       const now = Date.now() + 1000;
       const onFinish = jest.fn();
-      const wrapper = mount(<Statistic.Countdown value={now} onFinish={onFinish} />);
+      const wrapper = mount<Countdown>(<Statistic.Countdown value={now} onFinish={onFinish} />);
       wrapper.update();
 
       // setInterval should work
@@ -81,7 +82,7 @@ describe('Statistic', () => {
         const now = Date.now() - 1000;
 
         const onFinish = jest.fn();
-        const wrapper = mount(<Statistic.Countdown value={now} onFinish={onFinish} />);
+        const wrapper = mount<Countdown>(<Statistic.Countdown value={now} onFinish={onFinish} />);
         wrapper.update();
 
         const instance = wrapper.instance();
@@ -96,7 +97,7 @@ describe('Statistic', () => {
         const wrapper = mount(<Statistic.Countdown value={now} onFinish={onFinish} />);
         wrapper.update();
 
-        MockDate.set(moment('2019-11-28 00:00:00'));
+        MockDate.set(moment('2019-11-28 00:00:00').toISOString());
         jest.runAllTimers();
 
         expect(onFinish).toHaveBeenCalled();
