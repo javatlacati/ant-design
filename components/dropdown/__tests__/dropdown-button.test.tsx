@@ -1,11 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Dropdown from '..';
+import Button from '..';
 import Menu from '../../menu';
 
 describe('DropdownButton', () => {
   it('pass appropriate props to Dropdown', () => {
-    const props = {
+    const props: any = {
       align: {
         offset: [10, 20],
       },
@@ -20,10 +21,10 @@ describe('DropdownButton', () => {
       onVisibleChange: () => {},
     };
 
-    const wrapper = mount(<Dropdown.Button {...props} />);
-    const dropdownProps = wrapper.find(Dropdown).props();
+    const wrapper = mount<Button>(<Dropdown.Button {...props} />);
+    const dropdownProps: any = wrapper.find(Dropdown).props();
 
-    Object.keys(props).forEach(key => {
+    Object.keys(props).forEach((key: any) => {
       expect(dropdownProps[key]).toBe(props[key]); // eslint-disable-line
     });
   });
