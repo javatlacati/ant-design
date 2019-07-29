@@ -1,8 +1,9 @@
 import React from 'react';
-import { mount, render } from 'enzyme';
+import { mount, ReactWrapper, render } from 'enzyme';
 import RcTimePicker from 'rc-time-picker/lib/TimePicker';
 import moment from 'moment';
 import TimePicker from '..';
+// @ts-ignore
 import focusTest from '../../../tests/shared/focusTest';
 
 describe('TimePicker', () => {
@@ -20,8 +21,8 @@ describe('TimePicker', () => {
 
   it('renders addon correctly', () => {
     const addon = () => <button type="button">Ok</button>;
-    const wrapper = mount(<TimePicker addon={addon} />);
-    const rcTimePicker = wrapper.find(RcTimePicker);
+    const wrapper = mount<TimePicker>(<TimePicker addon={addon} />);
+    const rcTimePicker: ReactWrapper<any, never> = wrapper.find(RcTimePicker);
     const addonWrapper = render(rcTimePicker.props().addon());
 
     expect(addonWrapper).toMatchSnapshot();
@@ -43,21 +44,21 @@ describe('TimePicker', () => {
 
   it('handleChange should work correctly', done => {
     const date = moment('2000-01-01 00:00:00');
-    const onChange = (value, formattedValue) => {
+    const onChange = (value: any, formattedValue: string) => {
       expect(value).toBe(date);
       expect(formattedValue).toBe(date.format('HH:mm:ss'));
       done();
     };
-    const wrapper = mount(<TimePicker onChange={onChange} />).instance();
+    const wrapper = mount<TimePicker>(<TimePicker onChange={onChange} />).instance();
     wrapper.handleChange(date);
   });
 
   it('handleOpenClose should work correctly', done => {
-    const onOpenChange = open => {
+    const onOpenChange = (open: any) => {
       expect(open).toBe(true);
       done();
     };
-    const wrapper = mount(<TimePicker onOpenChange={onOpenChange} />).instance();
+    const wrapper = mount<TimePicker>(<TimePicker onOpenChange={onOpenChange} />).instance();
     wrapper.handleOpenClose({ open: true });
   });
 
