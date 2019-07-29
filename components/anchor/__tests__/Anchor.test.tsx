@@ -1,14 +1,15 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Anchor from '..';
+import { AnchorContainer } from "../Anchor";
 
 const { Link } = Anchor;
 
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const delay = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
 
 describe('Anchor Render', () => {
   it('Anchor render perfectly', () => {
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="#API" title="API" />
       </Anchor>,
@@ -21,7 +22,7 @@ describe('Anchor Render', () => {
   });
 
   it('Anchor render perfectly for complete href - click', () => {
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="http://www.example.com/#API" title="API" />
       </Anchor>,
@@ -33,12 +34,15 @@ describe('Anchor Render', () => {
   it('Anchor render perfectly for complete href - scroll', () => {
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(<div id="API">Hello</div>, { attachTo: root });
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="http://www.example.com/#API" title="API" />
       </Anchor>,
@@ -51,12 +55,15 @@ describe('Anchor Render', () => {
     const scrollToSpy = jest.spyOn(window, 'scrollTo');
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(<div id="API">Hello</div>, { attachTo: root });
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="##API" title="API" />
       </Anchor>,
@@ -69,33 +76,37 @@ describe('Anchor Render', () => {
   });
 
   it('should remove listener when unmount', async () => {
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="#API" title="API" />
       </Anchor>,
     );
-    const removeListenerSpy = jest.spyOn(wrapper.instance().scrollEvent, 'remove');
+    const removeListenerSpy = jest.spyOn(wrapper.instance()[`scrollEvent`], 'remove');
     wrapper.unmount();
     expect(removeListenerSpy).toHaveBeenCalled();
   });
 
   it('should unregister link when unmount children', async () => {
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor>
         <Link href="#API" title="API" />
       </Anchor>,
     );
-    expect(wrapper.instance().links).toEqual(['#API']);
+    expect(wrapper.instance()[`links`]).toEqual(['#API']);
     wrapper.setProps({ children: null });
-    expect(wrapper.instance().links).toEqual([]);
+    expect(wrapper.instance()[`links`]).toEqual([]);
   });
 
   it('should update links when link href update', async () => {
-    let anchorInstance = null;
-    function AnchorUpdate({ href }) {
+    let anchorInstance = mount<Anchor>(
+      <Anchor>
+        <Link href="#API" title="API" />
+      </Anchor>,
+    );
+    function AnchorUpdate({ href }: {href: string}) {
       return (
         <Anchor
-          ref={c => {
+          ref={(c: any) => {
             anchorInstance = c;
           }}
         >
@@ -105,22 +116,27 @@ describe('Anchor Render', () => {
     }
     const wrapper = mount(<AnchorUpdate href="#API" />);
 
-    expect(anchorInstance.links).toEqual(['#API']);
-    wrapper.setProps({ href: '#API_1' });
-    expect(anchorInstance.links).toEqual(['#API_1']);
+    expect(anchorInstance).not.toBeNull();
+    if (anchorInstance) {
+      // @ts-ignore
+      expect(anchorInstance[`links`]).toEqual(['#API']);
+      wrapper.setProps({ href: '#API_1' });
+      // @ts-ignore
+      expect(anchorInstance[`links`]).toEqual(['#API_1']);
+    }
   });
 
   it('Anchor onClick event', () => {
-    let event;
+    let event: any;
     let link;
-    const handleClick = (...arg) => {
+    const handleClick = (...arg: [any, { href: string, title: string } ]) => {
       [event, link] = arg;
     };
 
     const href = '#API';
     const title = 'API';
 
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor onClick={handleClick}>
         <Link href={href} title={title} />
       </Anchor>,
@@ -136,24 +152,28 @@ describe('Anchor Render', () => {
   it('Different function returns the same DOM', async () => {
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      expect(root).not.toBeNull();
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(<div id="API">Hello</div>, { attachTo: root });
-    const getContainerA = () => {
-      return document.getElementById('API');
+    const getContainerA = (): AnchorContainer => {
+      return document.getElementById('API') as AnchorContainer;
     };
-    const getContainerB = () => {
-      return document.getElementById('API');
+    const getContainerB = (): AnchorContainer => {
+      return document.getElementById('API') as AnchorContainer;
     };
 
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor getContainer={getContainerA}>
         <Link href="#API" title="API" />
       </Anchor>,
     );
-    const removeListenerSpy = jest.spyOn(wrapper.instance().scrollEvent, 'remove');
+    const removeListenerSpy = jest.spyOn(wrapper.instance()[`scrollEvent`], 'remove');
     await delay(1000);
     wrapper.setProps({ getContainer: getContainerB });
     expect(removeListenerSpy).not.toHaveBeenCalled();
@@ -162,9 +182,12 @@ describe('Anchor Render', () => {
   it('Different function returns different DOM', async () => {
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(
       <div>
@@ -174,18 +197,18 @@ describe('Anchor Render', () => {
       { attachTo: root },
     );
     const getContainerA = () => {
-      return document.getElementById('API1');
+      return document.getElementById('API1') as AnchorContainer;
     };
     const getContainerB = () => {
-      return document.getElementById('API2');
+      return document.getElementById('API2') as AnchorContainer;
     };
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor getContainer={getContainerA}>
         <Link href="#API1" title="API1" />
         <Link href="#API2" title="API2" />
       </Anchor>,
     );
-    const removeListenerSpy = jest.spyOn(wrapper.instance().scrollEvent, 'remove');
+    const removeListenerSpy = jest.spyOn(wrapper.instance()[`scrollEvent`], 'remove');
     expect(removeListenerSpy).not.toHaveBeenCalled();
     await delay(1000);
     wrapper.setProps({ getContainer: getContainerB });
@@ -195,13 +218,17 @@ describe('Anchor Render', () => {
   it('Same function returns the same DOM', () => {
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      expect(root).not.toBeNull();
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(<div id="API">Hello</div>, { attachTo: root });
-    const getContainer = () => document.getElementById('API');
-    const wrapper = mount(
+    const getContainer = () => document.getElementById('API') as AnchorContainer;
+    const wrapper = mount<Anchor>(
       <Anchor getContainer={getContainer}>
         <Link href="#API" title="API" />
       </Anchor>,
@@ -214,9 +241,13 @@ describe('Anchor Render', () => {
   it('Same function returns different DOM', async () => {
     let root = document.getElementById('root');
     if (!root) {
+      // @ts-ignore
       root = document.createElement('div', { id: 'root' });
-      root.id = 'root';
-      document.body.appendChild(root);
+      expect(root).not.toBeNull();
+      if (root) {
+        root.id = 'root';
+        document.body.appendChild(root);
+      }
     }
     mount(
       <div>
@@ -229,18 +260,19 @@ describe('Anchor Render', () => {
       container: document.getElementById('API1'),
     };
     const getContainer = () => {
-      return holdContainer.container;
+      return holdContainer.container as AnchorContainer;
     };
-    const wrapper = mount(
+    const wrapper = mount<Anchor>(
       <Anchor getContainer={getContainer}>
         <Link href="#API1" title="API1" />
         <Link href="#API2" title="API2" />
       </Anchor>,
     );
-    const removeListenerSpy = jest.spyOn(wrapper.instance().scrollEvent, 'remove');
+    const removeListenerSpy = jest.spyOn(wrapper.instance()[`scrollEvent`], 'remove');
     expect(removeListenerSpy).not.toHaveBeenCalled();
     await delay(1000);
     holdContainer.container = document.getElementById('API2');
+    // @ts-ignore
     wrapper.setProps({ 'data-only-trigger-re-render': true });
     expect(removeListenerSpy).toHaveBeenCalled();
   });
