@@ -4,11 +4,11 @@ import { mount } from 'enzyme';
 import Descriptions from '..';
 
 jest.mock('enquire.js', () => {
-  let that;
-  let unmatchFun;
+  let that: any;
+  let unmatchFun: any;
   return {
     unregister: jest.fn(),
-    register: (media, options) => {
+    register: (media: string, options: any) => {
       if (media === '(max-width: 575px)') {
         that = this;
         options.match.call(that);
@@ -72,7 +72,7 @@ describe('Descriptions', () => {
   it('column is number', () => {
     // eslint-disable-next-line global-require
     const wrapper = mount(
-      <Descriptions column="3">
+      <Descriptions column={3}>
         <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
         <Descriptions.Item label="Billing">Prepaid</Descriptions.Item>
         <Descriptions.Item label="time">18:00:00</Descriptions.Item>
@@ -84,7 +84,7 @@ describe('Descriptions', () => {
   });
 
   it('when typeof column is object', () => {
-    const wrapper = mount(
+    const wrapper = mount<Descriptions>(
       <Descriptions column={{ xs: 8, sm: 16, md: 24 }}>
         <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
         <Descriptions.Item label="Billing">Prepaid</Descriptions.Item>
