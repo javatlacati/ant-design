@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, mount } from 'enzyme';
 import KeyCode from 'rc-util/lib/KeyCode';
-import Cascader from '..';
+import Cascader, { CascaderOptionType } from '..';
 import focusTest from '../../../tests/shared/focusTest';
 
 const options = [
@@ -39,20 +39,21 @@ const options = [
   },
 ];
 
-function filter(inputValue, path) {
-  return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+function filter(inputValue: string, path: any) {
+  return path.some((option: any) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
 }
 
 describe('Cascader', () => {
   focusTest(Cascader);
 
   it('popup correctly when panel is hidden', () => {
-    const wrapper = mount(<Cascader options={options} />);
+    const wrapper = mount<Cascader>(<Cascader options={options} />);
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component
           .getComponent(),
       ),
     ).toMatchSnapshot();
@@ -60,15 +61,16 @@ describe('Cascader', () => {
 
   it('popup correctly when panel is open', () => {
     const onPopupVisibleChange = jest.fn();
-    const wrapper = mount(
+    const wrapper = mount<Cascader>(
       <Cascader options={options} onPopupVisibleChange={onPopupVisibleChange} />,
     );
     wrapper.find('input').simulate('click');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component
           .getComponent(),
       ),
     ).toMatchSnapshot();
@@ -84,43 +86,47 @@ describe('Cascader', () => {
   });
 
   it('popup correctly with defaultValue', () => {
-    const wrapper = mount(<Cascader options={options} defaultValue={['zhejiang', 'hangzhou']} />);
+    const wrapper = mount<Cascader>(<Cascader options={options} defaultValue={['zhejiang', 'hangzhou']} />);
     wrapper.find('input').simulate('click');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component
           .getComponent(),
       ),
     ).toMatchSnapshot();
   });
 
   it('should support popupVisible', () => {
-    const wrapper = mount(<Cascader options={options} defaultValue={['zhejiang', 'hangzhou']} />);
+    const wrapper = mount<Cascader>(<Cascader options={options} defaultValue={['zhejiang', 'hangzhou']} />);
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent().props.visible,
     ).toBe(false);
     wrapper.setProps({ popupVisible: true });
+    const component1: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component1
         .getComponent().props.visible,
     ).toBe(true);
   });
 
   it('can be selected', () => {
     const onChange = jest.fn();
-    const wrapper = mount(<Cascader options={options} onChange={onChange} />);
+    const wrapper = mount<Cascader>(<Cascader options={options} onChange={onChange} />);
     wrapper.find('input').simulate('click');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     let popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent(),
     );
     popupWrapper
@@ -129,18 +135,20 @@ describe('Cascader', () => {
       .find('.ant-cascader-menu-item')
       .at(0)
       .simulate('click');
+    const component1: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component1
           .getComponent(),
       ),
     ).toMatchSnapshot();
+    const component2: any = wrapper
+      .find('Trigger')
+      .instance();
     popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component2
         .getComponent(),
     );
     popupWrapper
@@ -149,18 +157,20 @@ describe('Cascader', () => {
       .find('.ant-cascader-menu-item')
       .at(0)
       .simulate('click');
+    const component3: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component3
           .getComponent(),
       ),
     ).toMatchSnapshot();
+    const component4: any = wrapper
+      .find('Trigger')
+      .instance();
     popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component4
         .getComponent(),
     );
     popupWrapper
@@ -169,11 +179,12 @@ describe('Cascader', () => {
       .find('.ant-cascader-menu-item')
       .at(0)
       .simulate('click');
+    const component5: any = wrapper
+      .find('Trigger')
+      .instance();
     expect(
       render(
-        wrapper
-          .find('Trigger')
-          .instance()
+        component5
           .getComponent(),
       ),
     ).toMatchSnapshot();
@@ -190,14 +201,15 @@ describe('Cascader', () => {
   });
 
   it('should highlight keyword and filter when search in Cascader', () => {
-    const wrapper = mount(<Cascader options={options} showSearch={{ filter }} />);
+    const wrapper = mount<Cascader>(<Cascader options={options} showSearch={{ filter }} />);
     wrapper.find('input').simulate('click');
     wrapper.find('input').simulate('change', { target: { value: 'z' } });
     expect(wrapper.state('inputValue')).toBe('z');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     const popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent(),
     );
     expect(popupWrapper).toMatchSnapshot();
@@ -208,10 +220,11 @@ describe('Cascader', () => {
     wrapper.find('input').simulate('click');
     wrapper.find('input').simulate('change', { target: { value: '__notfoundkeyword__' } });
     expect(wrapper.state('inputValue')).toBe('__notfoundkeyword__');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     const popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent(),
     );
     expect(popupWrapper).toMatchSnapshot();
@@ -319,7 +332,7 @@ describe('Cascader', () => {
         ],
       },
     ];
-    const wrapper = mount(
+    const wrapper = mount<Cascader>(
       <Cascader
         options={customerOptions}
         fieldNames={{
@@ -375,7 +388,7 @@ describe('Cascader', () => {
         ],
       },
     ];
-    const wrapper = mount(
+    const wrapper = mount<Cascader>(
       <Cascader
         options={customerOptions}
         filedNames={{
@@ -399,13 +412,14 @@ describe('Cascader', () => {
   });
 
   it('should show not found content when options.length is 0', () => {
-    const customerOptions = [];
-    const wrapper = mount(<Cascader options={customerOptions} />);
+    const customerOptions = [] as CascaderOptionType[];
+    const wrapper = mount<Cascader>(<Cascader options={customerOptions} />);
     wrapper.find('input').simulate('click');
+    const component: any = wrapper
+      .find('Trigger')
+      .instance();
     const popupWrapper = mount(
-      wrapper
-        .find('Trigger')
-        .instance()
+      component
         .getComponent(),
     );
     expect(popupWrapper).toMatchSnapshot();
@@ -466,7 +480,7 @@ describe('Cascader', () => {
           },
         ],
       },
-    ];
+    ] as any as CascaderOptionType[];
     expect(() => {
       mount(<Cascader options={optionsWithChildrenNull} />);
     }).not.toThrow();
